@@ -1,0 +1,18 @@
+import { z } from 'zod'
+
+export const footprintInputSchema = z.object({
+  transport: z.enum(['car-alone', 'carpool', 'public', 'cycling'], {
+    required_error: 'Transportation choice is required',
+  }),
+  diet: z.enum(['heavy-meat', 'moderate-meat', 'mixed', 'vegetarian', 'vegan'], {
+    required_error: 'Diet choice is required',
+  }),
+  energy: z.enum(['gas-fossil', 'mixed', 'electric-grid', 'renewable'], {
+    required_error: 'Home energy choice is required',
+  }),
+  flights: z.enum(['none', 'occasional', 'frequent', 'very-frequent'], {
+    required_error: 'Air travel choice is required',
+  }),
+})
+
+export type FootprintInput = z.infer<typeof footprintInputSchema>
