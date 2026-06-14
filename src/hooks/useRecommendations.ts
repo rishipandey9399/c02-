@@ -14,9 +14,9 @@ export function useRecommendations() {
       
       // Use real token or default fallback for public calculator results preview
       if (token) {
-        headers['Authorization'] = `Bearer ${token}`
+        headers.Authorization = `Bearer ${token}`
       } else {
-        headers['Authorization'] = `Bearer mock-valid-token`
+        headers.Authorization = `Bearer mock-valid-token`
       }
 
       const response = await fetch('/api/ai/recommendations', {
@@ -27,7 +27,7 @@ export function useRecommendations() {
 
       if (!response.ok) {
         const errData = (await response.json().catch(() => ({}))) as { error?: string }
-        throw new Error(errData.error || `Failed to get AI recommendations: ${response.status}`)
+        throw new Error(errData.error ?? `Failed to get AI recommendations: ${response.status}`)
       }
 
       return response.json() as Promise<RecommendationsResponse>

@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { requireAuth, AuthError } from '@/lib/auth/session'
-import { getUserProfile, updateUserProfile } from '@/lib/firebase/firestore'
 import { adminAuth } from '@/lib/firebase/admin'
+import { getUserProfile, updateUserProfile } from '@/lib/firebase/firestore'
+import { userUpdateSchema } from '@/schemas/user.schema'
 import type { UserProfile } from '@/types/user'
 
 export async function GET(request: NextRequest) {
@@ -85,7 +86,15 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON request body' }, { status: 400 })
   }
 
-  const { displayName, photoURL } = body as { displayName?: string; photoURL?: string }
+  const parsed = userUpdateSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Invalid input', issues: parsed.error.flatten().fieldErrors },
+      { status: 400 }
+    )
+  }
+
+  const { displayName, photoURL } = parsed.data
 
   try {
     const firebaseUser = await adminAuth.getUser(uid)

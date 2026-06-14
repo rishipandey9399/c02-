@@ -153,7 +153,7 @@ export async function updateUserProfile(
     const now = new Date().toISOString()
     const newProfile: UserProfile = {
       uid,
-      email: emailFallback || '',
+      email: emailFallback ?? '',
       createdAt: now,
       updatedAt: now,
     }

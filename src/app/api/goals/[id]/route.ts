@@ -42,7 +42,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 
   const updates = Object.fromEntries(
-    Object.entries(parsed.data).filter(([_, v]) => v !== undefined)
+    Object.entries(parsed.data).filter(([, v]) => v !== undefined)
   ) as Partial<Omit<UserGoal, 'id' | 'uid' | 'createdAt'>>
 
   try {

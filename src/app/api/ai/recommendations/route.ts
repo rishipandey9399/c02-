@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { requireAuth, AuthError } from '@/lib/auth/session'
-import { checkRateLimit } from '@/lib/rate-limit'
+import { calculateFootprint } from '@/lib/carbon/calculator'
 import { getGeminiModel } from '@/lib/gemini/client'
 import { buildRecommendationPrompt } from '@/lib/gemini/prompts'
-import { calculateFootprint } from '@/lib/carbon/calculator'
+import { checkRateLimit } from '@/lib/rate-limit'
 import { footprintInputSchema } from '@/schemas/footprint.schema'
 import { recommendationResponseSchema } from '@/schemas/gemini.schema'
 

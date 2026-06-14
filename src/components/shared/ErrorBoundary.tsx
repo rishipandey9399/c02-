@@ -1,7 +1,7 @@
 'use client'
 
-import React, { Component, type ErrorInfo, type ReactNode } from 'react'
 import { AlertCircle } from 'lucide-react'
+import React, { Component, type ErrorInfo, type ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
@@ -17,7 +17,7 @@ export class ErrorBoundary extends Component<Props, State> {
     hasError: false,
   }
 
-  public static getDerivedStateFromError(_: Error): State {
+  public static getDerivedStateFromError(): State {
     return { hasError: true }
   }
 
@@ -28,8 +28,8 @@ export class ErrorBoundary extends Component<Props, State> {
   public override render() {
     if (this.state.hasError) {
       return (
-        this.props.fallback || (
-          <div className="flex flex-col items-center justify-center p-8 text-center bg-destructive/10 border border-destructive/20 rounded-2xl space-y-3 max-w-md mx-auto my-6">
+        this.props.fallback ?? (
+          <div className="flex flex-col items-center justify-center p-8 text-center bg-destructive/10 border border-destructive/20 rounded-2xl space-y-3 max-w-md mx-auto my-6" role="alert">
             <AlertCircle className="w-10 h-10 text-destructive" />
             <div className="space-y-1">
               <h4 className="text-base font-bold text-foreground">Something went wrong</h4>

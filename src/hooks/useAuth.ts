@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
 import {
   onAuthStateChanged,
   signOut,
   signInWithPopup,
   type User,
 } from 'firebase/auth'
+import { useEffect, useState } from 'react'
 import { auth, googleProvider } from '@/lib/firebase/client'
 
 export function useAuth() {

@@ -1,9 +1,9 @@
 'use client'
 
 import { signInWithPopup } from 'firebase/auth'
-import { auth, googleProvider } from '@/lib/firebase/client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { auth, googleProvider } from '@/lib/firebase/client'
 
 export function GoogleSignInButton() {
   const router = useRouter()
@@ -29,6 +29,7 @@ export function GoogleSignInButton() {
       <button
         type="button"
         disabled={loading}
+        aria-busy={loading}
         onClick={() => void handleGoogleSignIn()}
         className="w-full flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted px-4 py-3.5 text-sm font-semibold text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         aria-label="Sign in with your Google account"
@@ -53,7 +54,7 @@ export function GoogleSignInButton() {
         </svg>
         <span>{loading ? 'Connecting...' : 'Sign in with Google'}</span>
       </button>
-      {error && <p className="text-xs text-destructive text-center">{error}</p>}
+      {error && <p className="text-xs text-destructive text-center" role="alert">{error}</p>}
     </div>
   )
 }

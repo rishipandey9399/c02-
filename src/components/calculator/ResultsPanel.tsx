@@ -1,14 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { useCalculatorStore } from '@/stores/calculatorStore'
-import { calculateFootprint } from '@/lib/carbon/calculator'
-import { DonutChart } from '../charts/DonutChart'
-import { BarComparison } from '../charts/BarComparison'
-import { RecommendationCard } from '../ai/RecommendationCard'
-import { useRecommendations } from '@/hooks/useRecommendations'
 import { Sparkles, RefreshCw, Zap, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
+import { RecommendationCard } from '../ai/RecommendationCard'
+import { BarComparison } from '../charts/BarComparison'
+import { DonutChart } from '../charts/DonutChart'
 import { useAuth } from '@/hooks/useAuth'
+import { useRecommendations } from '@/hooks/useRecommendations'
+import { calculateFootprint } from '@/lib/carbon/calculator'
+import { useCalculatorStore } from '@/stores/calculatorStore'
 
 export function ResultsPanel() {
   const { answers, reset } = useCalculatorStore()
@@ -22,7 +22,7 @@ export function ResultsPanel() {
 
   if (!answersComplete) {
     return (
-      <div className="text-center p-6 bg-destructive/10 border border-destructive/20 rounded-2xl">
+      <div className="text-center p-6 bg-destructive/10 border border-destructive/20 rounded-2xl" role="alert">
         <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-2" />
         <h3 className="font-bold text-lg">Incomplete Questionnaire</h3>
         <p className="text-sm text-muted-foreground mb-4">
@@ -190,7 +190,7 @@ export function ResultsPanel() {
         {showAIPlan && (
           <div className="space-y-6">
             {isPending && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse" role="status" aria-label="Loading recommendations...">
                 {[1, 2, 3].map((n) => (
                   <div
                     key={n}
@@ -208,7 +208,7 @@ export function ResultsPanel() {
             )}
 
             {error && (
-              <div className="text-center p-6 border border-destructive/20 bg-destructive/10 text-destructive rounded-xl max-w-md mx-auto text-sm">
+              <div className="text-center p-6 border border-destructive/20 bg-destructive/10 text-destructive rounded-xl max-w-md mx-auto text-sm" role="alert">
                 <AlertCircle className="w-6 h-6 mx-auto mb-2 text-destructive" />
                 <span className="font-semibold block mb-1">Failed to load AI Plan</span>
                 {error.message || 'Service is temporarily offline. Please try again.'}

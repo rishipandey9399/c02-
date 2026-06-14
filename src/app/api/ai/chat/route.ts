@@ -1,9 +1,9 @@
 import { type NextRequest } from 'next/server'
 import { requireAuth, AuthError } from '@/lib/auth/session'
-import { checkRateLimit } from '@/lib/rate-limit'
 import { getGeminiModel } from '@/lib/gemini/client'
 import { buildChatSystemPrompt } from '@/lib/gemini/prompts'
 import { sanitiseForPrompt } from '@/lib/gemini/safety'
+import { checkRateLimit } from '@/lib/rate-limit'
 import { chatInputSchema } from '@/schemas/gemini.schema'
 
 export async function POST(request: NextRequest) {

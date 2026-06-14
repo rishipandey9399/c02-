@@ -14,11 +14,7 @@ if (url && token) {
   })
 }
 
-export async function checkRateLimit(
-  identifier: string,
-  _limit = 10,
-  _window: `${number} s` | `${number} m` | `${number} h` | `${number} d` = '1 m'
-) {
+export async function checkRateLimit(identifier: string) {
   if (!ratelimit) {
     // Gracefully bypass if Upstash is not configured (e.g. locally or in testing)
     return

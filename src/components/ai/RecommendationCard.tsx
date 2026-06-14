@@ -1,8 +1,8 @@
 'use client'
 
 import { Car, Utensils, Home, Plane, ShoppingBag, Calendar, ArrowUpRight } from 'lucide-react'
-import type { AIRecommendation } from '@/types/carbon'
 import { cn } from '@/lib/utils'
+import type { AIRecommendation } from '@/types/carbon'
 
 interface RecommendationCardProps {
   recommendation: AIRecommendation
@@ -65,6 +65,7 @@ export function RecommendationCard({ recommendation, onAddGoal }: Recommendation
         <button
           type="button"
           onClick={onAddGoal}
+          aria-label={`Add goal: ${recommendation.title}`}
           className="text-primary hover:text-emerald-600 font-semibold flex items-center gap-0.5 group transition-colors text-xs cursor-pointer"
         >
           Add Goal

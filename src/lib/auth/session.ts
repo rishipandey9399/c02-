@@ -1,6 +1,6 @@
 import 'server-only'
-import { adminAuth } from '@/lib/firebase/admin'
 import { type NextRequest } from 'next/server'
+import { adminAuth } from '@/lib/firebase/admin'
 
 export class AuthError extends Error {
   constructor(public status: number, message: string) {

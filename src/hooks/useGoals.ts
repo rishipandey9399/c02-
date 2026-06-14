@@ -19,7 +19,7 @@ export function useGoalsList() {
 
       if (!response.ok) {
         const errData = (await response.json().catch(() => ({}))) as { error?: string }
-        throw new Error(errData.error || `Failed to fetch goals: ${response.status}`)
+        throw new Error(errData.error ?? `Failed to fetch goals: ${response.status}`)
       }
 
       return response.json() as Promise<GoalsListResponse>
@@ -48,7 +48,7 @@ export function useCreateGoal() {
 
       if (!response.ok) {
         const errData = (await response.json().catch(() => ({}))) as { error?: string }
-        throw new Error(errData.error || `Failed to create goal: ${response.status}`)
+        throw new Error(errData.error ?? `Failed to create goal: ${response.status}`)
       }
 
       return response.json() as Promise<{ id: string; message: string }>
@@ -83,7 +83,7 @@ export function useUpdateGoal() {
 
       if (!response.ok) {
         const errData = (await response.json().catch(() => ({}))) as { error?: string }
-        throw new Error(errData.error || `Failed to update goal: ${response.status}`)
+        throw new Error(errData.error ?? `Failed to update goal: ${response.status}`)
       }
 
       return response.json() as Promise<{ message: string }>
@@ -112,7 +112,7 @@ export function useDeleteGoal() {
 
       if (!response.ok) {
         const errData = (await response.json().catch(() => ({}))) as { error?: string }
-        throw new Error(errData.error || `Failed to delete goal: ${response.status}`)
+        throw new Error(errData.error ?? `Failed to delete goal: ${response.status}`)
       }
 
       return response.json() as Promise<{ message: string }>

@@ -1,6 +1,6 @@
 'use client'
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, TooltipProps } from 'recharts'
 import { CATEGORY_METADATA } from '@/lib/carbon/categories'
 
 interface DonutChartProps {
@@ -44,21 +44,18 @@ export function DonutChart({ data }: DonutChartProps) {
 
   const total = chartData.reduce((acc, curr) => acc + curr.value, 0)
 
-  const customTooltip = ({
+  const CustomTooltip = ({
     active,
     payload,
-  }: {
-    active?: boolean
-    payload?: Array<{ name: string; value: number; payload: { color: string } }>
-  }) => {
+  }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
       const item = payload[0]!
-      const percent = ((item.value / total) * 100).toFixed(1)
+      const percent = (((item.value as number) / total) * 100).toFixed(1)
       return (
         <div className="bg-card border border-border p-3 rounded-xl shadow-lg text-xs leading-none">
           <span className="font-semibold text-foreground block mb-1.5">{item.name}</span>
-          <span className="flex items-center gap-1.5 font-bold" style={{ color: item.payload.color }}>
-            {item.value.toFixed(1)} t CO₂e ({percent}%)
+          <span className="flex items-center gap-1.5 font-bold" style={{ color: item.payload?.color as string }}>
+            {(item.value as number).toFixed(1)} t CO₂e ({percent}%)
           </span>
         </div>
       )
@@ -83,7 +80,7 @@ export function DonutChart({ data }: DonutChartProps) {
               <Cell key={`cell-${index}`} fill={entry.color} stroke="transparent" />
             ))}
           </Pie>
-          <Tooltip content={customTooltip as any} />
+          <Tooltip content={<CustomTooltip />} />
           <Legend
             verticalAlign="bottom"
             height={36}

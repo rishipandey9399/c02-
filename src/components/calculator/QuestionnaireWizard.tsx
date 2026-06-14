@@ -1,12 +1,12 @@
 'use client'
 
-import { useCalculatorStore } from '@/stores/calculatorStore'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react'
 import { ProgressBar } from './ProgressBar'
 import { QuestionStep } from './QuestionStep'
 import { ResultsPanel } from './ResultsPanel'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react'
+import { useCalculatorStore } from '@/stores/calculatorStore'
 
 export function QuestionnaireWizard() {
   const { answers, step, nextStep, prevStep } = useCalculatorStore()

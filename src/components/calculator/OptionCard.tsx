@@ -1,7 +1,7 @@
 'use client'
 
-import { useCalculatorStore } from '@/stores/calculatorStore'
 import { cn } from '@/lib/utils'
+import { useCalculatorStore } from '@/stores/calculatorStore'
 
 interface OptionCardProps {
   value: string
@@ -22,19 +22,22 @@ export function OptionCard({
   const isSelected = answers[category] === value
 
   return (
-    <button
-      type="button"
-      role="radio"
-      aria-checked={isSelected}
-      aria-describedby={`${value}-description`}
-      onClick={() => selectAnswer(category, value)}
+    <label
       className={cn(
-        'w-full text-left rounded-2xl border-2 p-5 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden',
+        'w-full text-left rounded-2xl border-2 p-5 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden block focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2',
         isSelected
           ? 'border-primary bg-primary/10 shadow-lg shadow-primary/5 ring-1 ring-primary'
           : 'border-border bg-card hover:bg-muted hover:border-muted-foreground/30 shadow-sm'
       )}
     >
+      <input
+        type="radio"
+        name={category}
+        value={value}
+        checked={isSelected}
+        onChange={() => selectAnswer(category, value)}
+        className="sr-only"
+      />
       <div className="flex justify-between items-start gap-4">
         <div className="flex-1">
           <span className="font-semibold text-lg font-display block mb-1 text-foreground">
@@ -62,6 +65,6 @@ export function OptionCard({
       {isSelected && (
         <div className="absolute top-0 right-0 w-3 h-3 bg-primary rounded-bl-lg" />
       )}
-    </button>
+    </label>
   )
 }

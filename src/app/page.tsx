@@ -1,14 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useUIStore } from '@/stores/uiStore'
 import {
   Leaf,
   Sparkles,
-  Globe,
-  TrendingDown,
   ChevronDown,
   Sun,
   Moon,
@@ -18,11 +13,12 @@ import {
   Target,
   Menu,
   X,
-  Plus,
-  Minus,
   CheckCircle,
-  HelpCircle
+  HelpCircle,
 } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
+import { useUIStore } from '@/stores/uiStore'
 
 // Lifestyle Simulator types
 type TransportType = 'suv' | 'sedan' | 'ev' | 'transit'
@@ -175,6 +171,8 @@ export default function Home() {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 hover:bg-secondary rounded-xl text-foreground transition-all"
               aria-label="Toggle Menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -186,6 +184,7 @@ export default function Home() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
+            id="mobile-nav"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -327,8 +326,12 @@ export default function Home() {
 
                 {/* Transport choices */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Daily Transport</label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <span id="sim-transport-label" className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Daily Transport</span>
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="sim-transport-label"
+                    className="grid grid-cols-2 gap-2"
+                  >
                     {[
                       { key: 'suv', label: 'Gas SUV' },
                       { key: 'sedan', label: 'Gas Sedan' },
@@ -337,6 +340,9 @@ export default function Home() {
                     ].map((item) => (
                       <button
                         key={item.key}
+                        type="button"
+                        role="radio"
+                        aria-checked={simTransport === item.key}
                         onClick={() => setSimTransport(item.key as TransportType)}
                         className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center transition-all ${
                           simTransport === item.key
@@ -352,8 +358,12 @@ export default function Home() {
 
                 {/* Diet choices */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Dietary Choices</label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <span id="sim-diet-label" className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Dietary Choices</span>
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="sim-diet-label"
+                    className="grid grid-cols-2 gap-2"
+                  >
                     {[
                       { key: 'heavy-meat', label: 'High Red Meat' },
                       { key: 'mixed', label: 'Mixed Diet' },
@@ -362,6 +372,9 @@ export default function Home() {
                     ].map((item) => (
                       <button
                         key={item.key}
+                        type="button"
+                        role="radio"
+                        aria-checked={simDiet === item.key}
                         onClick={() => setSimDiet(item.key as DietType)}
                         className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center transition-all ${
                           simDiet === item.key
@@ -377,14 +390,21 @@ export default function Home() {
 
                 {/* Energy source */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Home Heating & Grid Power</label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <span id="sim-energy-label" className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Home Heating & Grid Power</span>
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="sim-energy-label"
+                    className="grid grid-cols-2 gap-2"
+                  >
                     {[
                       { key: 'fossil', label: 'Standard Grid (Fossil)' },
                       { key: 'renewable', label: 'Solar / Green Utility' }
                     ].map((item) => (
                       <button
                         key={item.key}
+                        type="button"
+                        role="radio"
+                        aria-checked={simEnergy === item.key}
                         onClick={() => setSimEnergy(item.key as EnergyType)}
                         className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center transition-all ${
                           simEnergy === item.key
@@ -410,9 +430,16 @@ export default function Home() {
                     <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">Total Carbon</span>
                     
                     {/* Gauge Display */}
-                    <div className="relative w-36 h-36 flex items-center justify-center mt-2">
+                    <div
+                      role="meter"
+                      aria-valuenow={simFootprint}
+                      aria-valuemin={0}
+                      aria-valuemax={15}
+                      aria-valuetext={`${simFootprint} tonnes of CO2e per year`}
+                      className="relative w-36 h-36 flex items-center justify-center mt-2"
+                    >
                       {/* SVG Ring */}
-                      <svg className="w-full h-full transform -rotate-90">
+                      <svg className="w-full h-full transform -rotate-90" aria-hidden="true">
                         <circle
                           cx="72"
                           cy="72"
@@ -434,7 +461,7 @@ export default function Home() {
                         />
                       </svg>
                       
-                      <div className="absolute flex flex-col items-center justify-center text-center">
+                      <div className="absolute flex flex-col items-center justify-center text-center" aria-hidden="true">
                         <span className="text-3xl font-black text-foreground font-display">{simFootprint}</span>
                         <span className="text-[10px] text-muted-foreground uppercase font-semibold">t CO₂e/yr</span>
                       </div>
@@ -511,7 +538,7 @@ export default function Home() {
                     AI Action Plan Recommendation
                   </h4>
                   <p className="text-xs text-muted-foreground leading-relaxed italic pr-12 min-h-[50px]">
-                    "{getSimulatedAIRecommendation()}"
+                    &ldquo;{getSimulatedAIRecommendation()}&rdquo;
                   </p>
                 </div>
               </div>
@@ -667,9 +694,11 @@ export default function Home() {
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${idx}`}
                   className="w-full px-6 py-5 flex items-center justify-between text-left font-semibold text-foreground hover:text-primary transition-colors cursor-pointer"
                 >
-                  <span className="font-display text-sm md:text-base flex items-center gap-2">
+                  <span id={`faq-question-${idx}`} className="font-display text-sm md:text-base flex items-center gap-2">
                     <HelpCircle className="w-4 h-4 text-primary shrink-0" />
                     {faq.q}
                   </span>
@@ -682,6 +711,9 @@ export default function Home() {
                 <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
+                      id={`faq-answer-${idx}`}
+                      role="region"
+                      aria-labelledby={`faq-question-${idx}`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}

@@ -14,7 +14,7 @@ export function useCalculateFootprint() {
         'Content-Type': 'application/json',
       }
       if (token) {
-        headers['Authorization'] = `Bearer ${token}`
+        headers.Authorization = `Bearer ${token}`
       }
 
       const response = await fetch('/api/footprint/calculate', {
@@ -25,7 +25,7 @@ export function useCalculateFootprint() {
 
       if (!response.ok) {
         const errData = (await response.json().catch(() => ({}))) as { error?: string }
-        throw new Error(errData.error || `Failed to save calculation: ${response.status}`)
+        throw new Error(errData.error ?? `Failed to save calculation: ${response.status}`)
       }
 
       return response.json() as Promise<CalculateResponse>
@@ -53,7 +53,7 @@ export function useFootprintHistory() {
 
       if (!response.ok) {
         const errData = (await response.json().catch(() => ({}))) as { error?: string }
-        throw new Error(errData.error || `Failed to fetch history: ${response.status}`)
+        throw new Error(errData.error ?? `Failed to fetch history: ${response.status}`)
       }
 
       return response.json() as Promise<FootprintResult[]>
