@@ -1,7 +1,7 @@
 'use client'
 
 import { Sparkles, RefreshCw, Zap, AlertCircle } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { RecommendationCard } from '../ai/RecommendationCard'
 import { BarComparison } from '../charts/BarComparison'
 import { DonutChart } from '../charts/DonutChart'
@@ -39,12 +39,12 @@ export function ResultsPanel() {
     )
   }
 
-  const result = calculateFootprint({
+  const result = useMemo(() => calculateFootprint({
     transport: answers.transport!,
     diet: answers.diet!,
     energy: answers.energy!,
     flights: answers.flights!,
-  })
+  }), [answers.transport, answers.diet, answers.energy, answers.flights])
 
   const handleGetAIPlan = () => {
     setShowAIPlan(true)
@@ -57,46 +57,49 @@ export function ResultsPanel() {
   }
 
   // Dynamic Rule-based Quick Wins
-  const quickWins = []
-  if (answers.transport === 'car-alone') {
-    quickWins.push({
-      title: 'Try Carpooling or Shared Transit',
-      description:
-        'Sharing your daily commutes or switching to public transit can cut your transportation emissions in half.',
-      saving: 'Up to 2.3t CO₂e/yr',
-    })
-  }
-  if (answers.diet === 'heavy-meat') {
-    quickWins.push({
-      title: 'Reduce Red Meat Portions',
-      description:
-        'Cutting back on beef and lamb is one of the highest leverage dietary actions, saving significant crop land emissions.',
-      saving: 'Up to 1.5t CO₂e/yr',
-    })
-  } else if (answers.diet === 'mixed') {
-    quickWins.push({
-      title: 'Try Plant-based Days',
-      description:
-        'Introducing one or two plant-based days per week reduces food chain lifecycle emissions and cuts costs.',
-      saving: 'Up to 0.8t CO₂e/yr',
-    })
-  }
-  if (answers.energy === 'gas-fossil') {
-    quickWins.push({
-      title: 'Switch to Renewable Energy',
-      description:
-        'Enrolling in a green utility tariff or installing clean heating switches your home off carbon-intense fossil fuels.',
-      saving: 'Up to 2.5t CO₂e/yr',
-    })
-  }
-  if (answers.flights === 'frequent' || answers.flights === 'very-frequent') {
-    quickWins.push({
-      title: 'Substitute Short Flights with Rail',
-      description:
-        'Taking high-speed trains instead of short-haul flights emits up to 10x less carbon and avoids airport travel times.',
-      saving: 'Up to 1.5t CO₂e/yr',
-    })
-  }
+  const quickWins = useMemo(() => {
+    const wins = []
+    if (answers.transport === 'car-alone') {
+      wins.push({
+        title: 'Try Carpooling or Shared Transit',
+        description:
+          'Sharing your daily commutes or switching to public transit can cut your transportation emissions in half.',
+        saving: 'Up to 2.3t CO₂e/yr',
+      })
+    }
+    if (answers.diet === 'heavy-meat') {
+      wins.push({
+        title: 'Reduce Red Meat Portions',
+        description:
+          'Cutting back on beef and lamb is one of the highest leverage dietary actions, saving significant crop land emissions.',
+        saving: 'Up to 1.5t CO₂e/yr',
+      })
+    } else if (answers.diet === 'mixed') {
+      wins.push({
+        title: 'Try Plant-based Days',
+        description:
+          'Introducing one or two plant-based days per week reduces food chain lifecycle emissions and cuts costs.',
+        saving: 'Up to 0.8t CO₂e/yr',
+      })
+    }
+    if (answers.energy === 'gas-fossil') {
+      wins.push({
+        title: 'Switch to Renewable Energy',
+        description:
+          'Enrolling in a green utility tariff or installing clean heating switches your home off carbon-intense fossil fuels.',
+        saving: 'Up to 2.5t CO₂e/yr',
+      })
+    }
+    if (answers.flights === 'frequent' || answers.flights === 'very-frequent') {
+      wins.push({
+        title: 'Substitute Short Flights with Rail',
+        description:
+          'Taking high-speed trains instead of short-haul flights emits up to 10x less carbon and avoids airport travel times.',
+        saving: 'Up to 1.5t CO₂e/yr',
+      })
+    }
+    return wins
+  }, [answers.transport, answers.diet, answers.energy, answers.flights])
 
   return (
     <div className="space-y-8 py-4">

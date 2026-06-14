@@ -17,7 +17,7 @@ import {
   HelpCircle,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useUIStore } from '@/stores/uiStore'
 
 // Lifestyle Simulator types
@@ -38,7 +38,7 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   // Live Carbon Impact Calculator formula (simplified for landing page preview)
-  const calculateSimulatedFootprint = () => {
+  const simFootprint = useMemo(() => {
     let transportEmissions = 3.2
     if (simTransport === 'suv') transportEmissions = 4.8
     if (simTransport === 'ev') transportEmissions = 1.1
@@ -56,13 +56,12 @@ export default function Home() {
     const baseline = 2.0
 
     return parseFloat((transportEmissions + dietEmissions + energyEmissions + baseline).toFixed(1))
-  }
+  }, [simTransport, simDiet, simEnergy])
 
-  const simFootprint = calculateSimulatedFootprint()
   const baselineDiffPercent = Math.round(((8.5 - simFootprint) / 8.5) * 100) // 8.5t is average benchmark
 
   // Simulated AI Recommendations text based on selections
-  const getSimulatedAIRecommendation = () => {
+  const simAIRecommendation = useMemo(() => {
     if (simTransport === 'suv' && simDiet === 'heavy-meat' && simEnergy === 'fossil') {
       return "Switching from a gas SUV to an EV and substituting 3 meals a week with plant-based alternatives represents your highest-leverage first step, saving up to 5.2 tonnes of CO2e annually."
     }
@@ -79,7 +78,7 @@ export default function Home() {
       return "Your home heating and electricity are sourced from fossil fuels. Switching to a certified green energy utility is a 0-effort transition that instantly cuts 2.4 tonnes of CO2e/year."
     }
     return "Great job! Small progressive adjustments like purchasing energy-efficient appliances or reducing air travel will slide you even closer to the 2.0t carbon neutrality target."
-  }
+  }, [simTransport, simDiet, simEnergy])
 
   // Framer-motion animation presets
   const containerVariants = {
@@ -538,7 +537,7 @@ export default function Home() {
                     AI Action Plan Recommendation
                   </h4>
                   <p className="text-xs text-muted-foreground leading-relaxed italic pr-12 min-h-[50px]">
-                    &ldquo;{getSimulatedAIRecommendation()}&rdquo;
+                    &ldquo;{simAIRecommendation}&rdquo;
                   </p>
                 </div>
               </div>
