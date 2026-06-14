@@ -1,27 +1,44 @@
 'use client'
 
 import { Sparkles, RefreshCw, Zap, AlertCircle } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { RecommendationCard } from '../ai/RecommendationCard'
 import { BarComparison } from '../charts/BarComparison'
 import { DonutChart } from '../charts/DonutChart'
 import { useAuth } from '@/hooks/useAuth'
 import { useRecommendations } from '@/hooks/useRecommendations'
+import { useCalculateFootprint } from '@/hooks/useFootprint'
 import { calculateFootprint } from '@/lib/carbon/calculator'
 import { useCalculatorStore } from '@/stores/calculatorStore'
 
 export function ResultsPanel() {
-  const { answers, reset } = useCalculatorStore()
+  const { answers, country, reset } = useCalculatorStore()
   const { user } = useAuth()
   const [showAIPlan, setShowAIPlan] = useState(false)
 
   const { mutate, data, isPending, error, isSuccess } = useRecommendations()
+  const calculateMutation = useCalculateFootprint()
+  const savedRef = useRef(false)
 
   const answersComplete =
     answers.transport && answers.diet && answers.energy && answers.flights
 
+  useEffect(() => {
+    if (user && answersComplete && !savedRef.current) {
+      savedRef.current = true
+      calculateMutation.mutate({
+        transport: answers.transport!,
+        diet: answers.diet!,
+        energy: answers.energy!,
+        flights: answers.flights!,
+        country,
+      })
+    }
+  }, [user, answersComplete, answers, country, calculateMutation])
+
   if (!answersComplete) {
     return (
+
       <div className="text-center p-6 bg-destructive/10 border border-destructive/20 rounded-2xl" role="alert">
         <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-2" />
         <h3 className="font-bold text-lg">Incomplete Questionnaire</h3>
@@ -44,7 +61,7 @@ export function ResultsPanel() {
     diet: answers.diet!,
     energy: answers.energy!,
     flights: answers.flights!,
-  }), [answers.transport, answers.diet, answers.energy, answers.flights])
+  }, country), [answers.transport, answers.diet, answers.energy, answers.flights, country])
 
   const handleGetAIPlan = () => {
     setShowAIPlan(true)
@@ -53,8 +70,10 @@ export function ResultsPanel() {
       diet: answers.diet!,
       energy: answers.energy!,
       flights: answers.flights!,
+      country,
     })
   }
+
 
   // Dynamic Rule-based Quick Wins
   const quickWins = useMemo(() => {

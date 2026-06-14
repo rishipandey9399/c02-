@@ -2,6 +2,9 @@ import {
   onAuthStateChanged,
   signOut,
   signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
   type User,
 } from 'firebase/auth'
 import { useEffect, useState } from 'react'
@@ -40,6 +43,35 @@ export function useAuth() {
     }
   }
 
+  const loginWithEmail = async (email: string, pass: string) => {
+    setLoading(true)
+    setError(null)
+    try {
+      await signInWithEmailAndPassword(auth, email, pass)
+    } catch (err) {
+      setError(err as Error)
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const signupWithEmail = async (email: string, pass: string, name?: string) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const credObj = await createUserWithEmailAndPassword(auth, email, pass)
+      if (name && credObj.user) {
+        await updateProfile(credObj.user, { displayName: name })
+      }
+    } catch (err) {
+      setError(err as Error)
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const logout = async () => {
     setLoading(true)
     setError(null)
@@ -68,7 +100,10 @@ export function useAuth() {
     loading,
     error,
     loginWithGoogle,
+    loginWithEmail,
+    signupWithEmail,
     logout,
     getToken,
   }
 }
+

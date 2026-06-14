@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calculateFootprint, EMISSION_FACTORS } from '@/lib/carbon/calculator'
+import { calculateFootprint, EMISSION_FACTORS, COUNTRY_EMISSION_FACTORS } from '@/lib/carbon/calculator'
 
 describe('calculateFootprint', () => {
   it('returns correct total for a car-alone, heavy-meat, gas, frequent-flyer profile', () => {
@@ -10,9 +10,9 @@ describe('calculateFootprint', () => {
       flights: 'frequent',
     })
 
-    expect(result.transport).toBe(EMISSION_FACTORS.transport['car-alone'])
+    expect(result.transport).toBe(COUNTRY_EMISSION_FACTORS.Global.transport['car-alone'])
     expect(result.diet).toBe(EMISSION_FACTORS.diet['heavy-meat'])
-    expect(result.energy).toBe(EMISSION_FACTORS.energy['gas-fossil'])
+    expect(result.energy).toBe(COUNTRY_EMISSION_FACTORS.Global.energy['gas-fossil'])
     expect(result.flights).toBe(EMISSION_FACTORS.flights.frequent)
     expect(result.goods).toBe(2.0)
     expect(result.total).toBeCloseTo(
@@ -20,6 +20,7 @@ describe('calculateFootprint', () => {
       2
     )
   })
+
 
   it('returns minimum footprint for cycling, vegan, renewable, no-flights profile', () => {
     const result = calculateFootprint({

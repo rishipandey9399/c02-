@@ -13,6 +13,8 @@ export const footprintInputSchema = z.object({
   flights: z.enum(['none', 'occasional', 'frequent', 'very-frequent'], {
     required_error: 'Air travel choice is required',
   }),
+  country: z.enum(['US', 'EU', 'IN', 'Global']).optional(),
 })
 
 export type FootprintInput = z.infer<typeof footprintInputSchema>
+

@@ -1,5 +1,6 @@
 import type { FootprintResult, UserAnswers, AIRecommendation } from './carbon'
 import type { UserGoal, UserProfile } from './user'
+import type { CountryCode } from '../constants/emission-factors'
 
 export interface ApiError {
   error: string
@@ -7,14 +8,19 @@ export interface ApiError {
   issues?: Record<string, string[]> // Flattened Zod errors
 }
 
-export type CalculateRequest = UserAnswers
+export interface CalculateRequest extends UserAnswers {
+  country?: CountryCode
+}
 
 export interface CalculateResponse {
   id: string
   result: FootprintResult
 }
 
-export type RecommendationsRequest = UserAnswers
+export interface RecommendationsRequest extends UserAnswers {
+  country?: CountryCode
+}
+
 
 export interface RecommendationsResponse {
   recommendations: AIRecommendation[]

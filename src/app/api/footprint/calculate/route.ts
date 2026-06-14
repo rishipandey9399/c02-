@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const result = calculateFootprint(parsed.data)
+    const result = calculateFootprint(parsed.data, parsed.data.country)
     const recordId = await saveFootprintRecord(uid, result)
     return NextResponse.json({ id: recordId, result }, { status: 200 })
   } catch (error) {

@@ -1,15 +1,16 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Sparkles, Globe } from 'lucide-react'
 import { ProgressBar } from './ProgressBar'
 import { QuestionStep } from './QuestionStep'
 import { ResultsPanel } from './ResultsPanel'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useCalculatorStore } from '@/stores/calculatorStore'
+import type { CountryCode } from '@/constants/emission-factors'
 
 export function QuestionnaireWizard() {
-  const { answers, step, nextStep, prevStep } = useCalculatorStore()
+  const { answers, country, setCountry, step, nextStep, prevStep } = useCalculatorStore()
   const prefersReducedMotion = useReducedMotion()
 
   const categoriesOrder: ('transport' | 'diet' | 'energy' | 'flights')[] = [
@@ -43,7 +44,7 @@ export function QuestionnaireWizard() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={transitionSettings}
-              className="space-y-6 py-6"
+              className="space-y-6 py-4"
             >
               <div className="text-center space-y-4">
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary px-3 py-1 bg-primary/10 rounded-full">
@@ -53,10 +54,29 @@ export function QuestionnaireWizard() {
                 <h1 className="text-3xl md:text-5xl font-black font-display tracking-tight text-foreground leading-tight">
                   Calculate Your <span className="text-primary">Carbon Footprint</span>
                 </h1>
-                <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
                   Discover your footprint across the 4 main areas of personal consumption, and get
                   a tailored AI reduction plan in under 3 minutes.
                 </p>
+              </div>
+
+              {/* Country Selection */}
+              <div className="max-w-xs mx-auto space-y-2 text-center pt-2">
+                <label htmlFor="country-selector" className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-center gap-1.5">
+                  <Globe className="w-4.5 h-4.5 text-primary" />
+                  Select Region / Grid Scale
+                </label>
+                <select
+                  id="country-selector"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value as CountryCode)}
+                  className="w-full bg-background border border-border rounded-xl px-3.5 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-semibold"
+                >
+                  <option value="Global">Global Average Factors</option>
+                  <option value="US">United States (High Transport / High Grid)</option>
+                  <option value="EU">Europe (Medium Transport / Low Grid)</option>
+                  <option value="IN">India (Low Transport / High Grid)</option>
+                </select>
               </div>
 
               <div className="pt-4 flex justify-center">
@@ -71,6 +91,7 @@ export function QuestionnaireWizard() {
               </div>
             </motion.div>
           )}
+
 
           {step > 0 && step <= 4 && currentCategory && (
             <motion.div
