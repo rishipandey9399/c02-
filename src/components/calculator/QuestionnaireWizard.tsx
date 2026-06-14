@@ -5,9 +5,9 @@ import { ArrowLeft, ArrowRight, Sparkles, Globe } from 'lucide-react'
 import { ProgressBar } from './ProgressBar'
 import { QuestionStep } from './QuestionStep'
 import { ResultsPanel } from './ResultsPanel'
+import type { CountryCode } from '@/constants/emission-factors'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useCalculatorStore } from '@/stores/calculatorStore'
-import type { CountryCode } from '@/constants/emission-factors'
 
 export function QuestionnaireWizard() {
   const { answers, country, setCountry, step, nextStep, prevStep } = useCalculatorStore()

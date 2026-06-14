@@ -1,6 +1,6 @@
+import type { CountryCode } from '../constants/emission-factors'
 import type { FootprintResult, UserAnswers, AIRecommendation } from './carbon'
 import type { UserGoal, UserProfile } from './user'
-import type { CountryCode } from '../constants/emission-factors'
 
 export interface ApiError {
   error: string

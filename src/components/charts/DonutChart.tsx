@@ -1,6 +1,7 @@
 'use client'
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, TooltipProps } from 'recharts'
+import type { TooltipProps } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import { CATEGORY_METADATA } from '@/lib/carbon/categories'
 
 interface DonutChartProps {
@@ -48,14 +49,14 @@ export function DonutChart({ data }: DonutChartProps) {
     active,
     payload,
   }: TooltipProps<number, string>) => {
-    if (active && payload && payload.length) {
+    if (active && payload?.length) {
       const item = payload[0]!
-      const percent = (((item.value as number) / total) * 100).toFixed(1)
+      const percent = (((item.value!) / total) * 100).toFixed(1)
       return (
         <div className="bg-card border border-border p-3 rounded-xl shadow-lg text-xs leading-none">
           <span className="font-semibold text-foreground block mb-1.5">{item.name}</span>
           <span className="flex items-center gap-1.5 font-bold" style={{ color: item.payload?.color as string }}>
-            {(item.value as number).toFixed(1)} t CO₂e ({percent}%)
+            {(item.value!).toFixed(1)} t CO₂e ({percent}%)
           </span>
         </div>
       )

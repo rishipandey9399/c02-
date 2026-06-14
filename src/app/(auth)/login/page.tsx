@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { Leaf, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -23,9 +23,10 @@ export default function LoginPage() {
     try {
       await loginWithEmail(email, password)
       router.push('/dashboard')
-    } catch (err: any) {
+    } catch (err) {
       console.error(err)
-      setError(err?.message || 'Invalid email or password.')
+      const message = err instanceof Error ? err.message : 'Invalid email or password.'
+      setError(message)
     } finally {
       setLoading(false)
     }

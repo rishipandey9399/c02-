@@ -1,19 +1,19 @@
 'use client'
 
-import { useMemo } from 'react'
+import { Target, ArrowRight, Loader2, Award, Zap } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Target, ArrowRight, Loader2, Award, Zap } from 'lucide-react'
+import { useMemo } from 'react'
 
+import { ActionItem } from '@/components/dashboard/ActionItem'
+import { CategoryBreakdown } from '@/components/dashboard/CategoryBreakdown'
+import { FootprintSummary } from '@/components/dashboard/FootprintSummary'
+import { GoalCard } from '@/components/dashboard/GoalCard'
+import { HabitTracker } from '@/components/dashboard/HabitTracker'
+import { ProgressChart } from '@/components/dashboard/ProgressChart'
 import { useAuth } from '@/hooks/useAuth'
 import { useFootprintHistory } from '@/hooks/useFootprint'
 import { useGoalsList } from '@/hooks/useGoals'
-import { FootprintSummary } from '@/components/dashboard/FootprintSummary'
-import { CategoryBreakdown } from '@/components/dashboard/CategoryBreakdown'
-import { ProgressChart } from '@/components/dashboard/ProgressChart'
-import { GoalCard } from '@/components/dashboard/GoalCard'
-import { ActionItem } from '@/components/dashboard/ActionItem'
-import { HabitTracker } from '@/components/dashboard/HabitTracker'
 
 export default function DashboardPage() {
   const router = useRouter()

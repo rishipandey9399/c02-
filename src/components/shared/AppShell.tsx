@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { Menu, X, Sun, Moon } from 'lucide-react'
+import { useState } from 'react'
 import { Sidebar } from './Sidebar'
 import { useUIStore } from '@/stores/uiStore'
 
@@ -20,9 +20,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-40 flex">
           {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+          <button
+            type="button"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm w-full h-full border-0 cursor-default"
             onClick={() => setMobileOpen(false)}
+            aria-label="Close menu overlay"
           />
           {/* Menu container */}
           <div className="relative w-64 max-w-xs h-full bg-background flex-col flex animate-in slide-in-from-left duration-200">

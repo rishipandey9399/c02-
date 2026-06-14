@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import type { TransportChoice, DietChoice, EnergyChoice, FlightsChoice } from '@/types/carbon'
 import type { CountryCode } from '@/constants/emission-factors'
+import type { TransportChoice, DietChoice, EnergyChoice, FlightsChoice } from '@/types/carbon'
 
 interface CalculatorState {
   country: CountryCode

@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { Leaf, Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -24,9 +24,10 @@ export default function RegisterPage() {
     try {
       await signupWithEmail(email, password, name)
       router.push('/dashboard')
-    } catch (err: any) {
+    } catch (err) {
       console.error(err)
-      setError(err?.message || 'Failed to create account. Please try again.')
+      const message = err instanceof Error ? err.message : 'Failed to create account. Please try again.'
+      setError(message)
     } finally {
       setLoading(false)
     }

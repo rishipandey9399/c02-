@@ -1,10 +1,10 @@
 'use client'
 
-import { useFootprintHistory } from '@/hooks/useFootprint'
 
-import { AIChat } from '@/components/ai/AIChat'
 import { Loader2, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
+import { AIChat } from '@/components/ai/AIChat'
+import { useFootprintHistory } from '@/hooks/useFootprint'
 
 
 export default function ChatPage() {

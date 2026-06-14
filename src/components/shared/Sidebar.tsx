@@ -1,7 +1,5 @@
 'use client'
 
-import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
 import {
   LayoutDashboard,
   History,
@@ -11,6 +9,8 @@ import {
   LogOut,
   Leaf,
 } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 
 import { useAuth } from '@/hooks/useAuth'
 

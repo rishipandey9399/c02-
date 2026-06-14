@@ -1,5 +1,7 @@
 'use client'
 
+import type {
+  TooltipProps} from 'recharts';
 import {
   AreaChart,
   Area,
@@ -7,8 +9,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
-  TooltipProps,
+  ResponsiveContainer
 } from 'recharts'
 import { EmptyState } from '../shared/EmptyState'
 
@@ -46,7 +47,7 @@ export function ProgressChart({ history }: ProgressChartProps) {
     active,
     payload,
   }: TooltipProps<number, string>) => {
-    if (active && payload && payload.length) {
+    if (active && payload?.length) {
       const value = payload[0]?.value
       return (
         <div className="bg-card border border-border p-3 rounded-xl shadow-lg text-xs leading-none">

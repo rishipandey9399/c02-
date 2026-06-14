@@ -1,8 +1,8 @@
 'use client'
 
-import { useFootprintHistory } from '@/hooks/useFootprint'
 import { Calendar, Leaf, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { useFootprintHistory } from '@/hooks/useFootprint'
 import { CATEGORY_METADATA } from '@/lib/carbon/categories'
 
 export default function HistoryPage() {

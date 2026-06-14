@@ -1,9 +1,9 @@
 'use client'
 
+import { Loader2, Download, Save, Shield, Bell } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useFootprintHistory } from '@/hooks/useFootprint'
-import { Loader2, Download, Save, Shield, Bell } from 'lucide-react'
 
 export default function SettingsPage() {
   const { user, loading } = useAuth()
@@ -86,10 +86,11 @@ export default function SettingsPage() {
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <label htmlFor="displayName" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Full Name
                 </label>
                 <input
+                  id="displayName"
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
@@ -99,10 +100,11 @@ export default function SettingsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <label htmlFor="email" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Email Address
                 </label>
                 <input
+                  id="email"
                   type="email"
                   disabled
                   value={user?.email || ''}

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
 import { Send, Sparkles, User, Bot, Loader2 } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import type { FootprintResult } from '@/types/carbon'
 

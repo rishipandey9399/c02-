@@ -1,12 +1,12 @@
 'use client'
 
+import { Target, Plus, X, Loader2 } from 'lucide-react'
 import { useState, useMemo } from 'react'
+import { GoalCard } from '@/components/dashboard/GoalCard'
 import {
   useGoalsList,
   useCreateGoal,
 } from '@/hooks/useGoals'
-import { GoalCard } from '@/components/dashboard/GoalCard'
-import { Target, Plus, X, Loader2 } from 'lucide-react'
 
 export default function GoalsPage() {
   const { data: goals = [], isLoading, error } = useGoalsList()
@@ -95,10 +95,11 @@ export default function GoalsPage() {
 
             <form onSubmit={handleCreateGoal} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <label htmlFor="title" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   Goal Title
                 </label>
                 <input
+                  id="title"
                   type="text"
                   required
                   value={title}
@@ -110,12 +111,13 @@ export default function GoalsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <label htmlFor="category" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Category
                   </label>
                   <select
+                    id="category"
                     value={category}
-                    onChange={(e: any) => setCategory(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCategory(e.target.value as "transport" | "diet" | "energy" | "flights" | "goods")}
                     className="w-full bg-background border border-border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   >
                     <option value="transport">Transport</option>
@@ -127,12 +129,13 @@ export default function GoalsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <label htmlFor="difficulty" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Difficulty
                   </label>
                   <select
+                    id="difficulty"
                     value={difficulty}
-                    onChange={(e: any) => setDifficulty(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDifficulty(e.target.value as "Easy" | "Medium" | "Committed")}
                     className="w-full bg-background border border-border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   >
                     <option value="Easy">Easy</option>
@@ -144,10 +147,11 @@ export default function GoalsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <label htmlFor="saving" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Annual CO2 Saving (t)
                   </label>
                   <input
+                    id="saving"
                     type="number"
                     step="0.1"
                     min="0.1"
@@ -159,10 +163,11 @@ export default function GoalsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <label htmlFor="targetDate" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Target Date
                   </label>
                   <input
+                    id="targetDate"
                     type="date"
                     required
                     value={targetDate}

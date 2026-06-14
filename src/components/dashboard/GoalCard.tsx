@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { Target, Trash2, Calendar, CheckSquare, Square, Loader2, Car, Utensils, Home, Plane, ShoppingBag } from 'lucide-react'
+import { useState } from 'react'
 import { useUpdateGoal, useDeleteGoal } from '@/hooks/useGoals'
 import { CATEGORY_METADATA } from '@/lib/carbon/categories'
 import type { UserGoal } from '@/types/user'

@@ -6,8 +6,8 @@ import { RecommendationCard } from '../ai/RecommendationCard'
 import { BarComparison } from '../charts/BarComparison'
 import { DonutChart } from '../charts/DonutChart'
 import { useAuth } from '@/hooks/useAuth'
-import { useRecommendations } from '@/hooks/useRecommendations'
 import { useCalculateFootprint } from '@/hooks/useFootprint'
+import { useRecommendations } from '@/hooks/useRecommendations'
 import { calculateFootprint } from '@/lib/carbon/calculator'
 import { useCalculatorStore } from '@/stores/calculatorStore'
 
@@ -36,47 +36,21 @@ export function ResultsPanel() {
     }
   }, [user, answersComplete, answers, country, calculateMutation])
 
-  if (!answersComplete) {
-    return (
-
-      <div className="text-center p-6 bg-destructive/10 border border-destructive/20 rounded-2xl" role="alert">
-        <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-2" />
-        <h3 className="font-bold text-lg">Incomplete Questionnaire</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Please fill out all questions before viewing your carbon footprint.
-        </p>
-        <button
-          type="button"
-          onClick={reset}
-          className="px-4 py-2 bg-primary text-white rounded-lg font-semibold"
-        >
-          Reset Quiz
-        </button>
-      </div>
-    )
-  }
-
-  const result = useMemo(() => calculateFootprint({
-    transport: answers.transport!,
-    diet: answers.diet!,
-    energy: answers.energy!,
-    flights: answers.flights!,
-  }, country), [answers.transport, answers.diet, answers.energy, answers.flights, country])
-
-  const handleGetAIPlan = () => {
-    setShowAIPlan(true)
-    mutate({
+  const result = useMemo(() => {
+    if (!answersComplete) {
+      return { transport: 0, diet: 0, energy: 0, flights: 0, goods: 0, total: 0 }
+    }
+    return calculateFootprint({
       transport: answers.transport!,
       diet: answers.diet!,
       energy: answers.energy!,
       flights: answers.flights!,
-      country,
-    })
-  }
-
+    }, country)
+  }, [answersComplete, answers.transport, answers.diet, answers.energy, answers.flights, country])
 
   // Dynamic Rule-based Quick Wins
   const quickWins = useMemo(() => {
+    if (!answersComplete) return []
     const wins = []
     if (answers.transport === 'car-alone') {
       wins.push({
@@ -118,7 +92,37 @@ export function ResultsPanel() {
       })
     }
     return wins
-  }, [answers.transport, answers.diet, answers.energy, answers.flights])
+  }, [answersComplete, answers.transport, answers.diet, answers.energy, answers.flights])
+
+  if (!answersComplete) {
+    return (
+      <div className="text-center p-6 bg-destructive/10 border border-destructive/20 rounded-2xl" role="alert">
+        <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-2" />
+        <h3 className="font-bold text-lg">Incomplete Questionnaire</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Please fill out all questions before viewing your carbon footprint.
+        </p>
+        <button
+          type="button"
+          onClick={reset}
+          className="px-4 py-2 bg-primary text-white rounded-lg font-semibold"
+        >
+          Reset Quiz
+        </button>
+      </div>
+    )
+  }
+
+  const handleGetAIPlan = () => {
+    setShowAIPlan(true)
+    mutate({
+      transport: answers.transport!,
+      diet: answers.diet!,
+      energy: answers.energy!,
+      flights: answers.flights!,
+      country,
+    })
+  }
 
   return (
     <div className="space-y-8 py-4">
