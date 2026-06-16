@@ -23,16 +23,10 @@ export async function POST(request: NextRequest) {
     })
   }
 
-  try {
-    await checkRateLimit(`ai-chat:${uid}`)
-  } catch (error) {
-    if (error instanceof Response) {
-      return error
-    }
-    return new Response(JSON.stringify({ error: 'Too many requests' }), {
-      status: 429,
-      headers: { 'Content-Type': 'application/json' },
-    })
+  const ip = request.headers.get('x-forwarded-for') || undefined
+  const limitCheck = await checkRateLimit(`ai-chat:${uid}`, ip)
+  if (!limitCheck.success && limitCheck.response) {
+    return limitCheck.response
   }
 
   let body: unknown

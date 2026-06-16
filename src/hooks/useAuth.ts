@@ -18,8 +18,18 @@ export function useAuth() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       auth,
-      (currentUser) => {
+      async (currentUser) => {
         setUser(currentUser)
+        if (currentUser) {
+          try {
+            const token = await currentUser.getIdToken()
+            document.cookie = `session=${token}; path=/; max-age=3600; SameSite=Lax; Secure`
+          } catch (err) {
+            console.error('Error setting session cookie:', err)
+          }
+        } else {
+          document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+        }
         setLoading(false)
       },
       (err) => {

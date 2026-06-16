@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth'
 import type { FootprintResult } from '@/types/carbon'
 
 interface Message {
+  id: string
   role: 'user' | 'assistant'
   content: string
 }
@@ -18,6 +19,7 @@ export function AIChat({ footprintContext }: AIChatProps) {
   const { getToken } = useAuth()
   const [messages, setMessages] = useState<Message[]>([
     {
+      id: 'initial-assistant',
       role: 'assistant',
       content: `Hello! I'm your Gemini Carbon Advisor. I can see your footprint is currently ${footprintContext.total.toFixed(1)} tonnes of CO₂e/yr. Ask me anything about how to reduce it, get recommendations for specific actions, or outline a personalized carbon plan!`,
     },
@@ -36,12 +38,14 @@ export function AIChat({ footprintContext }: AIChatProps) {
     if (!input.trim() || generating) return
 
     const userMessage = input.trim()
+    const userMsgId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15)
+    const assistantMsgId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15)
     setInput('')
-    setMessages((prev) => [...prev, { role: 'user', content: userMessage }])
+    setMessages((prev) => [...prev, { id: userMsgId, role: 'user', content: userMessage }])
     setGenerating(true)
 
     // Add temporary empty assistant message to stream into
-    setMessages((prev) => [...prev, { role: 'assistant', content: '' }])
+    setMessages((prev) => [...prev, { id: assistantMsgId, role: 'assistant', content: '' }])
 
     try {
       const token = await getToken()
@@ -109,8 +113,9 @@ export function AIChat({ footprintContext }: AIChatProps) {
           }
         }
       }
-    } catch (err: any) {
-      console.error('Chat error:', err)
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err)
+      console.error('Chat error:', errorMsg)
       setMessages((prev) => {
         const updated = [...prev]
         const last = updated[updated.length - 1]
@@ -142,10 +147,10 @@ export function AIChat({ footprintContext }: AIChatProps) {
 
       {/* Message Timeline */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        {messages.map((msg, index) => {
+        {messages.map((msg) => {
           const isUser = msg.role === 'user'
           return (
-            <div key={index} className={`flex items-start gap-3 ${isUser ? 'justify-end' : ''}`}>
+            <div key={msg.id} className={`flex items-start gap-3 ${isUser ? 'justify-end' : ''}`}>
               {!isUser && (
                 <div className="p-2 bg-secondary text-primary rounded-xl border border-border/40 shrink-0 mt-0.5">
                   <Bot className="w-4 h-4" />
@@ -186,6 +191,7 @@ export function AIChat({ footprintContext }: AIChatProps) {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a question about your carbon reductions..."
           disabled={generating}
+          aria-label="Message to AI"
           className="flex-1 bg-background border border-border rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-50"
         />
         <button

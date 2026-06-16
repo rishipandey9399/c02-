@@ -14,7 +14,7 @@ export const recommendationResponseSchema = z.object({
 })
 
 export const chatInputSchema = z.object({
-  message: z.string().min(1),
+  message: z.string().min(1).max(2000),
   footprintContext: z.object({
     transport: z.number(),
     diet: z.number(),

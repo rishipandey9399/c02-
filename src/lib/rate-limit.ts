@@ -14,30 +14,48 @@ if (url && token) {
   })
 }
 
-export async function checkRateLimit(identifier: string) {
+export async function checkRateLimit(
+  identifier: string,
+  ip?: string
+): Promise<{ success: boolean; response?: Response }> {
   if (!ratelimit) {
     // Gracefully bypass if Upstash is not configured (e.g. locally or in testing)
-    return
+    return { success: true }
   }
 
-  const { success, limit: limitVal, remaining, reset } = await ratelimit.limit(identifier)
-
-  if (!success) {
-    throw new Response(
-      JSON.stringify({
-        error: 'Rate limit exceeded',
-        code: 'RATE_LIMIT_EXCEEDED',
-        reset,
-      }),
-      {
-        status: 429,
-        headers: {
-          'Content-Type': 'application/json',
-          'Retry-After': String(Math.ceil((reset - Date.now()) / 1000)),
-          'X-RateLimit-Limit': String(limitVal),
-          'X-RateLimit-Remaining': String(remaining),
-        },
-      }
-    )
+  // 1. Rate limit by user identifier
+  const idResult = await ratelimit.limit(identifier)
+  if (!idResult.success) {
+    return { success: false, response: buildLimitResponse(idResult) }
   }
+
+  // 2. Rate limit by client IP address
+  if (ip) {
+    const ipResult = await ratelimit.limit(`ip:${ip}`)
+    if (!ipResult.success) {
+      return { success: false, response: buildLimitResponse(ipResult) }
+    }
+  }
+
+  return { success: true }
+}
+
+function buildLimitResponse(result: { limit: number; remaining: number; reset: number }): Response {
+  const { limit: limitVal, remaining, reset } = result
+  return new Response(
+    JSON.stringify({
+      error: 'Rate limit exceeded',
+      code: 'RATE_LIMIT_EXCEEDED',
+      reset,
+    }),
+    {
+      status: 429,
+      headers: {
+        'Content-Type': 'application/json',
+        'Retry-After': String(Math.ceil((reset - Date.now()) / 1000)),
+        'X-RateLimit-Limit': String(limitVal),
+        'X-RateLimit-Remaining': String(remaining),
+      },
+    }
+  )
 }

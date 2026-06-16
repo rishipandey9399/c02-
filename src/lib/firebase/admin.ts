@@ -16,7 +16,13 @@ if (!admin.apps.length) {
     })
   } else {
     // Fallback to application default credentials (useful for some dev/testing environments)
-    admin.initializeApp()
+    if (process.env.NODE_ENV === 'test') {
+      admin.initializeApp({
+        projectId: 'carbontrack-dummy',
+      })
+    } else {
+      admin.initializeApp()
+    }
   }
 }
 

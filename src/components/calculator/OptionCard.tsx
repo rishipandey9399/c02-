@@ -35,7 +35,8 @@ export function OptionCard({
         name={category}
         value={value}
         checked={isSelected}
-        onChange={() => selectAnswer(category, value)}
+        onChange={() => selectAnswer(category, value as any)}
+        aria-describedby={`${category}-${value}-description`}
         className="sr-only"
       />
       <div className="flex justify-between items-start gap-4">
@@ -44,7 +45,7 @@ export function OptionCard({
             {label}
           </span>
           <span
-            id={`${value}-description`}
+            id={`${category}-${value}-description`}
             className="text-sm text-muted-foreground block leading-relaxed"
           >
             {description}

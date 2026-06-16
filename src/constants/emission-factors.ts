@@ -61,7 +61,7 @@ export const EMISSION_FACTORS = {
   diet: {
     'heavy-meat': 3.3,
     'moderate-meat': 2.5,
-    mixed: 2.5,
+    mixed: 2.0,
     vegetarian: 1.7,
     vegan: 1.0,
   },

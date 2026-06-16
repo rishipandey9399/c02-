@@ -12,9 +12,9 @@ interface CalculatorState {
   }
   step: number // 0: Welcome, 1: Transport, 2: Diet, 3: Energy, 4: Flights, 5: Results
   setCountry: (country: CountryCode) => void
-  selectAnswer: (
-    category: 'transport' | 'diet' | 'energy' | 'flights',
-    value: string
+  selectAnswer: <K extends 'transport' | 'diet' | 'energy' | 'flights'>(
+    category: K,
+    value: NonNullable<CalculatorState['answers'][K]>
   ) => void
   nextStep: () => void
   prevStep: () => void
@@ -36,7 +36,7 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
     set((state) => ({
       answers: {
         ...state.answers,
-        [category]: value,
+        [category]: value as any,
       },
     })),
   nextStep: () => set((state) => ({ step: Math.min(5, state.step + 1) })),

@@ -18,13 +18,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  try {
-    await checkRateLimit(`ai-recommendations:${uid}`)
-  } catch (error) {
-    if (error instanceof Response) {
-      return error
-    }
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  const ip = request.headers.get('x-forwarded-for') || undefined
+  const limitCheck = await checkRateLimit(`ai-recommendations:${uid}`, ip)
+  if (!limitCheck.success && limitCheck.response) {
+    return limitCheck.response
   }
 
   let body: unknown
@@ -42,7 +39,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const footprintResult = calculateFootprint(parsed.data)
+  const footprintResult = calculateFootprint(parsed.data, parsed.data.country)
   const prompt = buildRecommendationPrompt(parsed.data, footprintResult)
   const model = getGeminiModel('gemini-2.0-flash')
 

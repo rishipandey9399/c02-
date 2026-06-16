@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 
 export function useReducedMotion(): boolean {
-  const [reducedMotion, setReducedMotion] = useState(false)
+  // Default to true (reduced motion / no animations) to prevent hydration mismatch and flash.
+  // We will enable animations in useEffect if the user has NOT requested reduced motion.
+  const [reducedMotion, setReducedMotion] = useState(true)
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')

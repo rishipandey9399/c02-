@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 interface UIState {
   sidebarOpen: boolean
@@ -9,12 +10,20 @@ interface UIState {
   toggleTheme: () => void
 }
 
-export const useUIStore = create<UIState>((set) => ({
-  sidebarOpen: false,
-  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  theme: 'dark', // default to dark theme for rich aesthetics
-  setTheme: (theme) => set({ theme }),
-  toggleTheme: () =>
-    set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
-}))
+export const useUIStore = create<UIState>()(
+  persist(
+    (set) => ({
+      sidebarOpen: false,
+      toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+      setSidebarOpen: (open) => set({ sidebarOpen: open }),
+      theme: 'dark', // default to dark theme for rich aesthetics
+      setTheme: (theme) => set({ theme }),
+      toggleTheme: () =>
+        set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
+    }),
+    {
+      name: 'carbontrack-ui',
+      partialize: (state) => ({ theme: state.theme } as any), // Only persist theme
+    }
+  )
+)

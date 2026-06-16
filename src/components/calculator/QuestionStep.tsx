@@ -50,6 +50,11 @@ const QUESTIONS_DATA = {
         description: 'Consume meat (especially beef or lamb) in most daily meals.',
       },
       {
+        value: 'moderate-meat',
+        label: 'Moderate meat-eater',
+        description: 'Eat poultry or pork a few times a week, red meat occasionally.',
+      },
+      {
         value: 'mixed',
         label: 'Mixed / Balanced',
         description: 'Eat poultry, pork, or beef a few times per week.',
@@ -94,7 +99,7 @@ const QUESTIONS_DATA = {
   },
   flights: {
     question: 'How often do you travel by plane annually?',
-    description: 'Aviation generates high high-altitude emissions. Even a single flight is substantial.',
+    description: 'Aviation generates significant high-altitude emissions. Even a single flight is substantial.',
     options: [
       {
         value: 'none',
