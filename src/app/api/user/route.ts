@@ -64,21 +64,6 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Mock response for tests
-  if (uid === 'mock-user-uid') {
-    return NextResponse.json(
-      {
-        uid: 'mock-user-uid',
-        email: 'mock@example.com',
-        displayName: 'Mock User Updated',
-        photoURL: 'https://example.com/avatar-updated.png',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      { status: 200 }
-    )
-  }
-
   let body: unknown
   try {
     body = await request.json()
@@ -91,6 +76,21 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(
       { error: 'Invalid input', issues: parsed.error.flatten().fieldErrors },
       { status: 400 }
+    )
+  }
+
+  // Mock response for tests
+  if (uid === 'mock-user-uid') {
+    return NextResponse.json(
+      {
+        uid: 'mock-user-uid',
+        email: 'mock@example.com',
+        displayName: 'Mock User Updated',
+        photoURL: 'https://example.com/avatar-updated.png',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      { status: 200 }
     )
   }
 

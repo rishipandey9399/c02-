@@ -1,7 +1,25 @@
 import { describe, it, expect, vi } from 'vitest'
-import { POST } from '@/app/api/footprint/calculate/route'
-import { GET } from '@/app/api/footprint/history/route'
-import { NextRequest } from 'next/server'
+
+vi.mock('firebase-admin', () => ({
+  apps: [],
+  initializeApp: vi.fn(),
+  credential: {
+    cert: vi.fn(),
+  },
+  auth: vi.fn().mockReturnValue({
+    verifyIdToken: vi.fn().mockResolvedValue({ uid: 'mock-user-uid' }),
+    getUser: vi.fn().mockResolvedValue({
+      uid: 'mock-user-uid',
+      email: 'mock@example.com',
+    }),
+  }),
+  firestore: vi.fn().mockReturnValue({
+    collection: vi.fn().mockReturnThis(),
+    doc: vi.fn().mockReturnThis(),
+    set: vi.fn().mockResolvedValue(undefined),
+    get: vi.fn().mockResolvedValue({ exists: true, data: () => ({}) }),
+  }),
+}))
 
 vi.mock('@/lib/firebase/firestore', () => ({
   saveFootprintRecord: vi.fn().mockResolvedValue('mock-record-id'),
@@ -18,6 +36,10 @@ vi.mock('@/lib/firebase/firestore', () => ({
   ]),
 }))
 
+import { POST } from '@/app/api/footprint/calculate/route'
+import { GET } from '@/app/api/footprint/history/route'
+import { NextRequest } from 'next/server'
+
 describe('Footprint API Endpoints', () => {
   describe('POST /api/footprint/calculate', () => {
     it('calculates, saves, and returns the result for an authorized request', async () => {
@@ -29,9 +51,10 @@ describe('Footprint API Endpoints', () => {
         },
         body: JSON.stringify({
           transport: 'car-alone',
-          diet: 'heavy-meat',
+          diet: 'moderate-meat',
           energy: 'gas-fossil',
           flights: 'frequent',
+          country: 'US',
         }),
       })
 

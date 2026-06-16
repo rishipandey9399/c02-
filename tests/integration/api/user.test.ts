@@ -1,34 +1,32 @@
 import { describe, it, expect, vi } from 'vitest'
-import { GET, PATCH } from '@/app/api/user/route'
-import { NextRequest } from 'next/server'
 
-vi.mock('@/lib/firebase/firestore', () => ({
-  getUserProfile: vi.fn().mockImplementation((uid) => {
-    if (uid === 'mock-user-uid') {
-      return Promise.resolve({
-        uid: 'mock-user-uid',
-        email: 'mock@example.com',
-        displayName: 'Mock User',
-        photoURL: 'https://example.com/avatar.png',
-        createdAt: '2026-06-09T00:00:00.000Z',
-        updatedAt: '2026-06-09T00:00:00.000Z',
-      })
-    }
-    return Promise.resolve(null)
-  }),
-  updateUserProfile: vi.fn().mockResolvedValue(undefined),
-}))
-
-vi.mock('@/lib/firebase/admin', () => ({
-  adminAuth: {
+vi.mock('firebase-admin', () => ({
+  apps: [],
+  initializeApp: vi.fn(),
+  credential: {
+    cert: vi.fn(),
+  },
+  auth: vi.fn().mockReturnValue({
+    verifyIdToken: vi.fn().mockResolvedValue({ uid: 'mock-user-uid' }),
     getUser: vi.fn().mockResolvedValue({
       uid: 'mock-user-uid',
       email: 'mock@example.com',
-      displayName: 'Mock User',
-      photoURL: 'https://example.com/avatar.png',
     }),
-  },
+  }),
+  firestore: vi.fn().mockReturnValue({
+    collection: vi.fn().mockReturnThis(),
+    doc: vi.fn().mockReturnThis(),
+    set: vi.fn().mockResolvedValue(undefined),
+    get: vi.fn().mockResolvedValue({ exists: true, data: () => ({}) }),
+  }),
 }))
+
+vi.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: vi.fn().mockResolvedValue({ success: true }),
+}))
+
+import { GET, PATCH } from '@/app/api/user/route'
+import { NextRequest } from 'next/server'
 
 describe('User Profile API Endpoints', () => {
   describe('GET /api/user', () => {

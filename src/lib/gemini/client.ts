@@ -18,7 +18,24 @@ export function getGeminiModel(
     if (process.env.NODE_ENV === 'test') {
       // Return a basic mock structure if in tests and genAI is not initialised
       return {
-        generateContent: () => Promise.resolve({ response: { text: () => '{}' } }),
+        generateContent: () =>
+          Promise.resolve({
+            response: {
+              text: () =>
+                JSON.stringify({
+                  recommendations: [
+                    {
+                      title: 'Switch to public transit',
+                      detail: 'Using public transit instead of a solo vehicle can significantly cut transport emissions.',
+                      saving: '2.0-3.4 t/yr',
+                      difficulty: 'Medium',
+                      category: 'transport',
+                      timeframe: '1-3 months',
+                    },
+                  ],
+                }),
+            },
+          }),
         startChat: () => ({ sendMessageStream: () => Promise.resolve({ stream: [] }) }),
       } as unknown as ReturnType<GoogleGenerativeAI['getGenerativeModel']>
     }
