@@ -11,6 +11,8 @@ vi.mock('firebase-admin', () => ({
     getUser: vi.fn().mockResolvedValue({
       uid: 'mock-user-uid',
       email: 'mock@example.com',
+      displayName: 'Mock User',
+      photoURL: 'https://example.com/avatar.png',
     }),
   }),
   firestore: vi.fn().mockReturnValue({
@@ -23,6 +25,31 @@ vi.mock('firebase-admin', () => ({
 
 vi.mock('@/lib/rate-limit', () => ({
   checkRateLimit: vi.fn().mockResolvedValue({ success: true }),
+}))
+
+let mockDbUser = {
+  uid: 'mock-user-uid',
+  email: 'mock@example.com',
+  displayName: 'Mock User',
+  photoURL: 'https://example.com/avatar.png',
+  createdAt: '2026-06-09T00:00:00.000Z',
+  updatedAt: '2026-06-09T00:00:00.000Z',
+}
+
+vi.mock('@/lib/firebase/firestore', () => ({
+  getUserProfile: vi.fn().mockImplementation((uid) => {
+    if (uid === 'mock-user-uid') {
+      return Promise.resolve(mockDbUser)
+    }
+    return Promise.resolve(null)
+  }),
+  updateUserProfile: vi.fn().mockImplementation((uid, updates, email) => {
+    if (uid === 'mock-user-uid') {
+      mockDbUser = { ...mockDbUser, ...updates, updatedAt: new Date().toISOString() }
+      if (email) mockDbUser.email = email
+    }
+    return Promise.resolve()
+  }),
 }))
 
 import { GET, PATCH } from '@/app/api/user/route'
@@ -78,6 +105,14 @@ describe('User Profile API Endpoints', () => {
 
       const response = await PATCH(req)
       expect(response.status).toBe(200)
+
+      const data = (await response.json()) as {
+        uid: string
+        displayName: string
+        photoURL: string
+      }
+      expect(data.displayName).toBe('Jane Doe')
+      expect(data.photoURL).toBe('https://example.com/new-avatar.png')
     })
 
     it('returns 400 for invalid request body input', async () => {

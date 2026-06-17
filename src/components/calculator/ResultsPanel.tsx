@@ -169,9 +169,9 @@ export function ResultsPanel() {
             Your Immediate Quick Wins
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {quickWins.map((win, idx) => (
+            {quickWins.map((win) => (
               <div
-                key={idx}
+                key={win.title}
                 className="bg-card border border-border p-5 rounded-2xl space-y-2 flex flex-col justify-between"
               >
                 <div className="space-y-1">
@@ -244,8 +244,8 @@ export function ResultsPanel() {
             {isSuccess && data && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {data.recommendations.map((rec, idx) => (
-                    <RecommendationCard key={idx} recommendation={rec} />
+                  {data.recommendations.map((rec) => (
+                    <RecommendationCard key={rec.title} recommendation={rec} />
                   ))}
                 </div>
                 {!user && (

@@ -16,20 +16,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Mock response for tests
-  if (uid === 'mock-user-uid') {
-    return NextResponse.json(
-      {
-        uid: 'mock-user-uid',
-        email: 'mock@example.com',
-        displayName: 'Mock User',
-        photoURL: 'https://example.com/avatar.png',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      { status: 200 }
-    )
-  }
+
 
   try {
     let profile = await getUserProfile(uid)
@@ -79,20 +66,7 @@ export async function PATCH(request: NextRequest) {
     )
   }
 
-  // Mock response for tests
-  if (uid === 'mock-user-uid') {
-    return NextResponse.json(
-      {
-        uid: 'mock-user-uid',
-        email: 'mock@example.com',
-        displayName: 'Mock User Updated',
-        photoURL: 'https://example.com/avatar-updated.png',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      { status: 200 }
-    )
-  }
+
 
   const { displayName, photoURL } = parsed.data
 

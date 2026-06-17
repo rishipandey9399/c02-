@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   Leaf,
   Sparkles,
@@ -79,20 +78,6 @@ export default function Home() {
     }
     return "Great job! Small progressive adjustments like purchasing energy-efficient appliances or reducing air travel will slide you even closer to the 2.0t carbon neutrality target."
   }, [simTransport, simDiet, simEnergy])
-
-  // Framer-motion animation presets
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.1 }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } }
-  }
 
   const faqs = [
     {
@@ -180,97 +165,75 @@ export default function Home() {
       </header>
 
       {/* Mobile Menu Navigation Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            id="mobile-nav"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden fixed top-16 left-0 right-0 z-30 glassmorphism border-b border-border p-6 shadow-xl space-y-4"
-          >
-            <nav className="flex flex-col gap-4 text-base font-medium">
-              <a
-                href="#features"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-primary transition-colors py-2 border-b border-border/20"
-              >
-                Features
-              </a>
-              <a
-                href="#simulator"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-primary transition-colors py-2 border-b border-border/20"
-              >
-                Simulator
-              </a>
-              <a
-                href="#how-it-works"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-primary transition-colors py-2 border-b border-border/20"
-              >
-                How It Works
-              </a>
-              <a
-                href="#faq"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-primary transition-colors py-2"
-              >
-                FAQ
-              </a>
-            </nav>
-            <Link
-              href="/calculator"
+      {mobileMenuOpen && (
+        <div
+          id="mobile-nav"
+          className="md:hidden fixed top-16 left-0 right-0 z-30 glassmorphism border-b border-border p-6 shadow-xl space-y-4 animate-fade-slide-in motion-reduce:animate-none"
+        >
+          <nav className="flex flex-col gap-4 text-base font-medium">
+            <a
+              href="#features"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full block py-3 text-center font-bold text-white bg-primary rounded-xl shadow-md hover:bg-emerald-600 transition-all"
+              className="hover:text-primary transition-colors py-2 border-b border-border/20"
             >
-              Calculate Your Footprint
-            </Link>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              Features
+            </a>
+            <a
+              href="#simulator"
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-primary transition-colors py-2 border-b border-border/20"
+            >
+              Simulator
+            </a>
+            <a
+              href="#how-it-works"
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-primary transition-colors py-2 border-b border-border/20"
+            >
+              How It Works
+            </a>
+            <a
+              href="#faq"
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-primary transition-colors py-2"
+            >
+              FAQ
+            </a>
+          </nav>
+          <Link
+            href="/calculator"
+            onClick={() => setMobileMenuOpen(false)}
+            className="w-full block py-3 text-center font-bold text-white bg-primary rounded-xl shadow-md hover:bg-emerald-600 transition-all"
+          >
+            Calculate Your Footprint
+          </Link>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative pt-12 pb-24 px-6 max-w-7xl mx-auto flex flex-col items-center">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="text-center space-y-6 max-w-4xl"
-        >
+        <div className="text-center space-y-6 max-w-4xl animate-fade-in-up motion-reduce:animate-none">
           {/* Badge */}
-          <motion.div
-            variants={itemVariants}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-primary bg-primary/10 border border-primary/20 backdrop-blur-md"
-          >
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-primary bg-primary/10 border border-primary/20 backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Powered by Google Gemini AI</span>
-          </motion.div>
+          </div>
 
           {/* Heading */}
-          <motion.h1
-            variants={itemVariants}
-            className="text-4xl sm:text-6xl font-black font-display tracking-tight leading-none"
-          >
+          <h1 className="text-4xl sm:text-6xl font-black font-display tracking-tight leading-none">
             Uncover and Reduce Your{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 dark:from-emerald-400 dark:via-teal-300 dark:to-emerald-500">
               Carbon Footprint
             </span>
-          </motion.h1>
+          </h1>
 
           {/* Subheading */}
-          <motion.p
-            variants={itemVariants}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-          >
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Calculate your carbon impact in 60 seconds, analyze category breakdowns, and receive a personalized reduction roadmap generated by AI.
-          </motion.p>
+          </p>
 
           {/* CTAs */}
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4"
-          >
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Link
               href="/calculator"
               className="w-full sm:w-auto px-8 py-4 bg-primary text-primary-foreground font-bold rounded-2xl shadow-lg shadow-primary/20 hover:bg-primary/95 transition-all hover:scale-[1.03] flex items-center justify-center gap-2 group"
@@ -284,16 +247,11 @@ export default function Home() {
             >
               Try Lifestyle Simulator
             </a>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Floating Mini Dashboard Simulator Mockup */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8, ease: 'easeOut' }}
-          className="mt-16 w-full max-w-5xl relative"
-        >
+        <div className="mt-16 w-full max-w-5xl relative animate-fade-in-up [animation-delay:300ms] opacity-0 [animation-fill-mode:forwards] motion-reduce:animate-none">
           {/* Glowing Aura behind simulator */}
           <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl opacity-10 blur-xl -z-10" />
 
@@ -446,16 +404,14 @@ export default function Home() {
                           className="stroke-muted fill-transparent"
                           strokeWidth="10"
                         />
-                        <motion.circle
+                        <circle
                           cx="72"
                           cy="72"
                           r="60"
-                          className="stroke-primary fill-transparent"
+                          className="stroke-primary fill-transparent transition-[stroke-dashoffset] duration-500 ease-in-out"
                           strokeWidth="10"
                           strokeDasharray={377}
-                          initial={{ strokeDashoffset: 377 }}
-                          animate={{ strokeDashoffset: 377 - (377 * Math.min(simFootprint, 15)) / 15 }}
-                          transition={{ duration: 0.5, ease: 'easeInOut' }}
+                          strokeDashoffset={377 - (377 * Math.min(simFootprint, 15)) / 15}
                           strokeLinecap="round"
                         />
                       </svg>
@@ -544,7 +500,7 @@ export default function Home() {
 
             </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Impact Counter Section */}
@@ -607,10 +563,9 @@ export default function Home() {
               desc: "Log your monthly footprint history in Firestore, set targets, and track your carbon reduction trajectory over time."
             }
           ].map((feat, idx) => (
-            <motion.div
+            <div
               key={idx}
-              whileHover={{ y: -8 }}
-              className="bg-card hover:bg-card/80 border border-border p-6 rounded-2xl shadow-sm transition-all hover:shadow-md flex flex-col justify-between"
+              className="bg-card hover:bg-card/80 hover:-translate-y-2 border border-border p-6 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md flex flex-col justify-between"
             >
               <div className="space-y-4">
                 <div className="p-3 bg-secondary/50 rounded-xl inline-block">
@@ -619,7 +574,7 @@ export default function Home() {
                 <h4 className="text-lg font-bold font-display text-foreground">{feat.title}</h4>
                 <p className="text-xs text-muted-foreground leading-relaxed">{feat.desc}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
@@ -707,23 +662,20 @@ export default function Home() {
                     }`}
                   />
                 </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      id={`faq-answer-${idx}`}
-                      role="region"
-                      aria-labelledby={`faq-question-${idx}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    >
-                      <div className="px-6 pb-6 text-xs md:text-sm text-muted-foreground border-t border-border/20 pt-4 leading-relaxed">
-                        {faq.a}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <div
+                  id={`faq-answer-${idx}`}
+                  role="region"
+                  aria-labelledby={`faq-question-${idx}`}
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-6 pb-6 text-xs md:text-sm text-muted-foreground border-t border-border/20 pt-4 leading-relaxed">
+                      {faq.a}
+                    </div>
+                  </div>
+                </div>
               </div>
             )
           })}

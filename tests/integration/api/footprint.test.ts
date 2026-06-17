@@ -26,11 +26,11 @@ vi.mock('@/lib/firebase/firestore', () => ({
   getFootprintHistory: vi.fn().mockResolvedValue([
     {
       transport: 4.6,
-      diet: 2.5,
+      diet: 2.8,
       energy: 3.8,
       flights: 2.8,
       goods: 2.0,
-      total: 15.7,
+      total: 16.0,
       createdAt: '2026-06-09T00:00:00.000Z',
     },
   ]),
@@ -70,7 +70,7 @@ describe('Footprint API Endpoints', () => {
       }
 
       expect(data.id).toBe('mock-record-id')
-      expect(data.result.total).toBe(15.7)
+      expect(data.result.total).toBe(16.0)
       expect(data.result.goods).toBe(2.0)
     })
 
@@ -110,7 +110,7 @@ describe('Footprint API Endpoints', () => {
       }>
 
       expect(data).toHaveLength(1)
-      expect(data[0]?.total).toBe(15.7)
+      expect(data[0]?.total).toBe(16.0)
     })
 
     it('returns 401 for unauthorized history retrieval', async () => {

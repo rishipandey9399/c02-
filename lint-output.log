@@ -1,0 +1,27 @@
+
+> carbontrack@1.0.0 lint
+> next lint
+
+
+./src/components/auth/UserMenu.tsx
+71:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/calculator/OptionCard.tsx
+38:57  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/dashboard/HabitTracker.tsx
+30:6  Warning: React Hook useMemo has a missing dependency: 'habits'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/shared/Sidebar.tsx
+90:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/hooks/useAuth.ts
+21:7  Error: Promise returned in function argument where a void return was expected.  @typescript-eslint/no-misused-promises
+
+./src/stores/calculatorStore.ts
+39:30  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/stores/uiStore.ts
+26:57  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules

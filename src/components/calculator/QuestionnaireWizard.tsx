@@ -1,17 +1,14 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Sparkles, Globe } from 'lucide-react'
 import { ProgressBar } from './ProgressBar'
 import { QuestionStep } from './QuestionStep'
 import { ResultsPanel } from './ResultsPanel'
 import type { CountryCode } from '@/constants/emission-factors'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useCalculatorStore } from '@/stores/calculatorStore'
 
 export function QuestionnaireWizard() {
   const { answers, country, setCountry, step, nextStep, prevStep } = useCalculatorStore()
-  const prefersReducedMotion = useReducedMotion()
 
   const categoriesOrder: ('transport' | 'diet' | 'energy' | 'flights')[] = [
     'transport',
@@ -23,10 +20,6 @@ export function QuestionnaireWizard() {
   const currentCategory = step > 0 && step <= 4 ? categoriesOrder[step - 1] : null
   const isAnswered = currentCategory ? answers[currentCategory] !== null : false
 
-  const transitionSettings = prefersReducedMotion
-    ? { duration: 0 }
-    : { duration: 0.3, ease: 'easeInOut' }
-
   return (
     <div className="w-full max-w-3xl mx-auto bg-card border border-border p-6 md:p-8 rounded-3xl shadow-xl shadow-foreground/[0.02] overflow-hidden glassmorphism">
       {step > 0 && step <= 4 && (
@@ -36,16 +29,9 @@ export function QuestionnaireWizard() {
       )}
 
       <div className="relative min-h-[350px] flex flex-col justify-between">
-        <AnimatePresence mode="wait" initial={false}>
+        <div key={step} className="animate-fade-slide-in motion-reduce:animate-none">
           {step === 0 && (
-            <motion.div
-              key="welcome"
-              initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={transitionSettings}
-              className="space-y-6 py-4"
-            >
+            <div className="space-y-6 py-4">
               <div className="text-center space-y-4">
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary px-3 py-1 bg-primary/10 rounded-full">
                   <Sparkles className="w-3.5 h-3.5 text-primary" />
@@ -89,34 +75,21 @@ export function QuestionnaireWizard() {
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
-            </motion.div>
+            </div>
           )}
 
-
           {step > 0 && step <= 4 && currentCategory && (
-            <motion.div
-              key={currentCategory}
-              initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={transitionSettings}
-              className="py-2"
-            >
+            <div className="py-2">
               <QuestionStep category={currentCategory} stepIndex={step} />
-            </motion.div>
+            </div>
           )}
 
           {step === 5 && (
-            <motion.div
-              key="results"
-              initial={prefersReducedMotion ? {} : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={transitionSettings}
-            >
+            <div>
               <ResultsPanel />
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
 
         {step > 0 && step <= 4 && (
           <div className="flex justify-between items-center pt-8 border-t border-border mt-8">

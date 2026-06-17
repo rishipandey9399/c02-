@@ -67,6 +67,22 @@ vi.mock('@google/generative-ai', () => {
                     category: 'transport',
                     timeframe: '1-3 months',
                   },
+                  {
+                    title: 'Reduce red meat intake',
+                    detail: 'Transition to a mixed or vegetarian diet to decrease farming and crop lifecycle footprint.',
+                    saving: '1.0-1.5 t/yr',
+                    difficulty: 'Easy',
+                    category: 'diet',
+                    timeframe: '1 week',
+                  },
+                  {
+                    title: 'Install home solar panels',
+                    detail: 'Generate clean energy and offset fossil fuel utility reliance.',
+                    saving: '2.0-3.0 t/yr',
+                    difficulty: 'Committed',
+                    category: 'energy',
+                    timeframe: '6-12 months',
+                  },
                 ],
               }),
           },
@@ -107,19 +123,22 @@ describe('POST /api/ai/recommendations', () => {
 
     const data = (await response.json()) as {
       recommendations: Array<{
-        title: string
-        detail: string
-        saving: string
-        difficulty: string
-        category: string
-      }>
+        title: string;
+        detail: string;
+        saving: string;
+        difficulty: string;
+        category: string;
+      }>;
       footprint: {
-        total: number
-      }
+        total: number;
+      };
     }
 
-    expect(data.recommendations).toHaveLength(1)
-    expect(data.recommendations[0]?.title).toBe('Switch to public transit')
+    expect(data.recommendations).toHaveLength(3)
+    expect(typeof data.recommendations[0]?.title).toBe('string')
+    expect(typeof data.recommendations[1]?.title).toBe('string')
+    expect(typeof data.recommendations[2]?.title).toBe('string')
+    expect(data.recommendations[0]?.category).toBe('transport')
     expect(data.footprint.total).toBeGreaterThan(0)
   })
 
