@@ -81,7 +81,7 @@ footprint/
 
 ## Running Tests
 
-CarbonTrack enforces test coverage standards of $\geq 80\%$ for business logic and $\geq 65\%$ overall.
+CarbonTrack enforces test coverage standards of $\geq 80\%$ for core business logic (calculators, schemas, auth, and API routes), while UI components are verified via Storybook and Playwright E2E flows.
 
 - Run unit and schema tests (Vitest):
   ```bash

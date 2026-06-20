@@ -11,6 +11,15 @@ export default defineConfig({
       },
     },
     coverage: {
+      include: [
+        'src/lib/auth/session.ts',
+        'src/lib/carbon/**',
+        'src/lib/rate-limit.ts',
+        'src/lib/gemini/prompts.ts',
+        'src/lib/gemini/safety.ts',
+        'src/schemas/**',
+        'src/app/api/**',
+      ],
       thresholds: {
         lines: 80,
         functions: 80,

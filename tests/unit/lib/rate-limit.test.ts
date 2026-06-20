@@ -13,7 +13,7 @@ describe('Rate Limiter Unit Tests', () => {
     expect(result.success).toBe(true)
   })
 
-  it('calls limit with user identifier when credentials are configured', async () => {
+  it('calls limit with user identifier and client IP when both are configured', async () => {
     process.env.UPSTASH_REDIS_REST_URL = 'mock-url'
     process.env.UPSTASH_REDIS_REST_TOKEN = 'mock-token'
 
@@ -30,6 +30,7 @@ describe('Rate Limiter Unit Tests', () => {
     const result = await checkRateLimit('user-123', '127.0.0.1')
 
     expect(limitSpy).toHaveBeenCalledWith('user-123')
+    expect(limitSpy).toHaveBeenCalledWith('ip:127.0.0.1')
     expect(result.success).toBe(true)
   })
 
@@ -47,9 +48,10 @@ describe('Rate Limiter Unit Tests', () => {
     } as any)
 
     const { checkRateLimit } = await import('@/lib/rate-limit')
-    const result = await checkRateLimit('', '192.168.1.1')
+    const result = await checkRateLimit(undefined, '192.168.1.1')
 
     expect(limitSpy).toHaveBeenCalledWith('ip:192.168.1.1')
+    expect(limitSpy).not.toHaveBeenCalledWith('undefined')
     expect(result.success).toBe(true)
   })
 

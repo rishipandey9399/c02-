@@ -15,7 +15,7 @@ if (url && token) {
 }
 
 export async function checkRateLimit(
-  identifier: string,
+  identifier?: string,
   ip?: string
 ): Promise<{ success: boolean; response?: Response }> {
   if (!ratelimit) {
@@ -29,10 +29,9 @@ export async function checkRateLimit(
     if (!idResult.success) {
       return { success: false, response: buildLimitResponse(idResult) }
     }
-    return { success: true }
   }
 
-  // 2. Fallback: Rate limit by client IP address
+  // 2. Rate limit by client IP address if provided
   if (ip) {
     const ipResult = await ratelimit.limit(`ip:${ip}`)
     if (!ipResult.success) {

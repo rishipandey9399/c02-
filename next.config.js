@@ -40,18 +40,6 @@ const nextConfig = {
             value: 'origin-when-cross-origin',
           },
           {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' https://www.googletagmanager.com https://apis.google.com",
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https://storage.googleapis.com https://lh3.googleusercontent.com",
-              "connect-src 'self' https://*.firestore.googleapis.com https://*.firebaseio.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com",
-              "font-src 'self'",
-              "frame-src 'none'",
-            ].join('; '),
-          },
-          {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(self)',
           },
