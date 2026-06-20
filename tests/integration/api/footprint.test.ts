@@ -1,25 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('firebase-admin', () => ({
-  apps: [],
-  initializeApp: vi.fn(),
-  credential: {
-    cert: vi.fn(),
-  },
-  auth: vi.fn().mockReturnValue({
-    verifyIdToken: vi.fn().mockResolvedValue({ uid: 'mock-user-uid' }),
-    getUser: vi.fn().mockResolvedValue({
-      uid: 'mock-user-uid',
-      email: 'mock@example.com',
-    }),
-  }),
-  firestore: vi.fn().mockReturnValue({
-    collection: vi.fn().mockReturnThis(),
-    doc: vi.fn().mockReturnThis(),
-    set: vi.fn().mockResolvedValue(undefined),
-    get: vi.fn().mockResolvedValue({ exists: true, data: () => ({}) }),
-  }),
-}))
+
 
 vi.mock('@/lib/firebase/firestore', () => ({
   saveFootprintRecord: vi.fn().mockResolvedValue('mock-record-id'),

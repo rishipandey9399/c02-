@@ -1,18 +1,23 @@
 'use client'
 
 import { Menu, X, Sun, Moon } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Sidebar } from './Sidebar'
 import { useUIStore } from '@/stores/uiStore'
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { theme, toggleTheme } = useUIStore()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <div className="min-h-screen bg-background text-foreground flex transition-colors duration-300">
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:block" inert={mobileOpen ? true : undefined}>
         <Sidebar />
       </div>
 
@@ -43,7 +48,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col lg:pl-64">
+      <div className="flex-1 flex flex-col lg:pl-64" inert={mobileOpen ? true : undefined}>
         {/* Top Navbar */}
         <header className="sticky top-0 z-20 w-full glassmorphism border-b border-border/40 backdrop-blur-md px-6 py-4 flex items-center justify-between">
           <button
@@ -61,15 +66,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               className="p-2 hover:bg-secondary rounded-xl text-muted-foreground hover:text-foreground transition-all"
               aria-label="Toggle Theme"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {mounted && theme === 'dark' ? (
+                <Sun className="w-4 h-4" />
+              ) : mounted ? (
+                <Moon className="w-4 h-4" />
+              ) : (
+                <span className="w-4 h-4 block" />
+              )}
             </button>
           </div>
         </header>
 
         {/* Content Wrapper */}
-        <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full focus:outline-none" id="main-content">
+        <div className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full focus:outline-none">
           {children}
-        </main>
+        </div>
       </div>
     </div>
   )

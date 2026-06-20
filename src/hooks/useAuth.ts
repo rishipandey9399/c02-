@@ -1,5 +1,5 @@
 import {
-  onAuthStateChanged,
+  onIdTokenChanged,
   signOut,
   signInWithPopup,
   signInWithEmailAndPassword,
@@ -16,7 +16,7 @@ export function useAuth() {
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
+    const unsubscribe = onIdTokenChanged(
       auth,
       (currentUser) => {
         setUser(currentUser)

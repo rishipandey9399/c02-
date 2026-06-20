@@ -16,22 +16,29 @@ import {
   HelpCircle,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useUIStore } from '@/stores/uiStore'
 
 // Lifestyle Simulator types
 type TransportType = 'suv' | 'sedan' | 'ev' | 'transit'
 type DietType = 'heavy-meat' | 'mixed' | 'vegetarian' | 'vegan'
 type EnergyType = 'fossil' | 'renewable'
+type FlightsType = 'none' | 'occasional' | 'frequent' | 'very-frequent'
 
 export default function Home() {
   const { theme, toggleTheme } = useUIStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Simulator State
   const [simTransport, setSimTransport] = useState<TransportType>('sedan')
   const [simDiet, setSimDiet] = useState<DietType>('mixed')
   const [simEnergy, setSimEnergy] = useState<EnergyType>('fossil')
+  const [simFlights, setSimFlights] = useState<FlightsType>('none')
 
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -51,11 +58,16 @@ export default function Home() {
     let energyEmissions = 2.8
     if (simEnergy === 'renewable') energyEmissions = 0.4
 
+    let flightsEmissions = 0.1
+    if (simFlights === 'occasional') flightsEmissions = 1.5
+    if (simFlights === 'frequent') flightsEmissions = 2.8
+    if (simFlights === 'very-frequent') flightsEmissions = 5.0
+
     // consumer goods baseline
     const baseline = 2.0
 
-    return parseFloat((transportEmissions + dietEmissions + energyEmissions + baseline).toFixed(1))
-  }, [simTransport, simDiet, simEnergy])
+    return parseFloat((transportEmissions + dietEmissions + energyEmissions + flightsEmissions + baseline).toFixed(1))
+  }, [simTransport, simDiet, simEnergy, simFlights])
 
   const baselineDiffPercent = Math.round(((8.5 - simFootprint) / 8.5) * 100) // 8.5t is average benchmark
 
@@ -64,8 +76,11 @@ export default function Home() {
     if (simTransport === 'suv' && simDiet === 'heavy-meat' && simEnergy === 'fossil') {
       return "Switching from a gas SUV to an EV and substituting 3 meals a week with plant-based alternatives represents your highest-leverage first step, saving up to 5.2 tonnes of CO2e annually."
     }
-    if (simTransport === 'ev' && simDiet === 'vegan' && simEnergy === 'renewable') {
+    if (simTransport === 'ev' && simDiet === 'vegan' && simEnergy === 'renewable' && simFlights === 'none') {
       return "Excellent! You are already in the top 5% of low-carbon lifestyles. Focus on offsetting the baseline consumer goods emission through localized reforestation projects and solar community shares."
+    }
+    if (simFlights === 'very-frequent' || simFlights === 'frequent') {
+      return "Your high air travel frequency contributes significantly to your footprint. Consider replacing short-haul flights with high-speed rail, or combine trips to reduce annual flights."
     }
     if (simDiet === 'heavy-meat') {
       return "Your beef and lamb consumption represents over 35% of your footprint. Transitioning to a mixed or vegetarian diet even 3 days a week can cut your dietary carbon emissions in half."
@@ -77,7 +92,8 @@ export default function Home() {
       return "Your home heating and electricity are sourced from fossil fuels. Switching to a certified green energy utility is a 0-effort transition that instantly cuts 2.4 tonnes of CO2e/year."
     }
     return "Great job! Small progressive adjustments like purchasing energy-efficient appliances or reducing air travel will slide you even closer to the 2.0t carbon neutrality target."
-  }, [simTransport, simDiet, simEnergy])
+  }, [simTransport, simDiet, simEnergy, simFlights])
+
 
   const faqs = [
     {
@@ -132,7 +148,13 @@ export default function Home() {
               className="p-2 hover:bg-secondary rounded-xl text-muted-foreground hover:text-foreground transition-all"
               aria-label="Toggle Theme"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {mounted && theme === 'dark' ? (
+                <Sun className="w-4 h-4" />
+              ) : mounted ? (
+                <Moon className="w-4 h-4" />
+              ) : (
+                <span className="w-4 h-4 block" />
+              )}
             </button>
             <Link
               href="/calculator"
@@ -149,7 +171,13 @@ export default function Home() {
               className="p-2 hover:bg-secondary rounded-xl text-muted-foreground hover:text-foreground transition-all"
               aria-label="Toggle Theme"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {mounted && theme === 'dark' ? (
+                <Sun className="w-4 h-4" />
+              ) : mounted ? (
+                <Moon className="w-4 h-4" />
+              ) : (
+                <span className="w-4 h-4 block" />
+              )}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -316,20 +344,24 @@ export default function Home() {
                       { key: 'ev', label: 'Electric Vehicle' },
                       { key: 'transit', label: 'Public Transit' }
                     ].map((item) => (
-                      <button
+                      <label
                         key={item.key}
-                        type="button"
-                        role="radio"
-                        aria-checked={simTransport === item.key}
-                        onClick={() => setSimTransport(item.key as TransportType)}
-                        className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center transition-all ${
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center cursor-pointer transition-all block focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${
                           simTransport === item.key
                             ? 'bg-primary/10 border-primary text-primary font-bold shadow-sm'
                             : 'bg-background hover:bg-secondary/40 border-border text-muted-foreground'
                         }`}
                       >
-                        {item.label}
-                      </button>
+                        <input
+                          type="radio"
+                          name="sim-transport"
+                          value={item.key}
+                          checked={simTransport === item.key}
+                          onChange={() => setSimTransport(item.key as TransportType)}
+                          className="sr-only"
+                        />
+                        <span>{item.label}</span>
+                      </label>
                     ))}
                   </div>
                 </div>
@@ -348,20 +380,24 @@ export default function Home() {
                       { key: 'vegetarian', label: 'Vegetarian' },
                       { key: 'vegan', label: 'Plant-Based' }
                     ].map((item) => (
-                      <button
+                      <label
                         key={item.key}
-                        type="button"
-                        role="radio"
-                        aria-checked={simDiet === item.key}
-                        onClick={() => setSimDiet(item.key as DietType)}
-                        className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center transition-all ${
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center cursor-pointer transition-all block focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${
                           simDiet === item.key
                             ? 'bg-primary/10 border-primary text-primary font-bold shadow-sm'
                             : 'bg-background hover:bg-secondary/40 border-border text-muted-foreground'
                         }`}
                       >
-                        {item.label}
-                      </button>
+                        <input
+                          type="radio"
+                          name="sim-diet"
+                          value={item.key}
+                          checked={simDiet === item.key}
+                          onChange={() => setSimDiet(item.key as DietType)}
+                          className="sr-only"
+                        />
+                        <span>{item.label}</span>
+                      </label>
                     ))}
                   </div>
                 </div>
@@ -378,20 +414,60 @@ export default function Home() {
                       { key: 'fossil', label: 'Standard Grid (Fossil)' },
                       { key: 'renewable', label: 'Solar / Green Utility' }
                     ].map((item) => (
-                      <button
+                      <label
                         key={item.key}
-                        type="button"
-                        role="radio"
-                        aria-checked={simEnergy === item.key}
-                        onClick={() => setSimEnergy(item.key as EnergyType)}
-                        className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center transition-all ${
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center cursor-pointer transition-all block focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${
                           simEnergy === item.key
                             ? 'bg-primary/10 border-primary text-primary font-bold shadow-sm'
                             : 'bg-background hover:bg-secondary/40 border-border text-muted-foreground'
                         }`}
                       >
-                        {item.label}
-                      </button>
+                        <input
+                          type="radio"
+                          name="sim-energy"
+                          value={item.key}
+                          checked={simEnergy === item.key}
+                          onChange={() => setSimEnergy(item.key as EnergyType)}
+                          className="sr-only"
+                        />
+                        <span>{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Flights source */}
+                <div className="space-y-2">
+                  <span id="sim-flights-label" className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">Annual Air Travel</span>
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="sim-flights-label"
+                    className="grid grid-cols-2 gap-2"
+                  >
+                    {[
+                      { key: 'none', label: 'Rarely / Never' },
+                      { key: 'occasional', label: 'Occasional (1-2 flights)' },
+                      { key: 'frequent', label: 'Frequent (3-5 flights)' },
+                      { key: 'very-frequent', label: 'Regular / Business' }
+                    ].map((item) => (
+                      <label
+                        key={item.key}
+                        className={`px-3 py-2 text-xs font-semibold rounded-xl border text-center cursor-pointer transition-all block focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${
+                          simFlights === item.key
+                            ? 'bg-primary/10 border-primary text-primary font-bold shadow-sm'
+                            : 'bg-background hover:bg-secondary/40 border-border text-muted-foreground'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="sim-flights"
+                          value={item.key}
+                          checked={simFlights === item.key}
+                          onChange={() => setSimFlights(item.key as FlightsType)}
+                          className="sr-only"
+                        />
+                        <span>{item.label}</span>
+                      </label>
                     ))}
                   </div>
                 </div>
@@ -445,9 +521,9 @@ export default function Home() {
 
                     <div className="mt-4 flex flex-col items-center gap-1">
                       <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                        simFootprint <= 4.0 ? 'bg-emerald-500/10 text-emerald-500' :
-                        simFootprint <= 8.0 ? 'bg-yellow-500/10 text-yellow-500' :
-                        'bg-destructive/10 text-destructive'
+                        simFootprint <= 4.0 ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' :
+                        simFootprint <= 8.0 ? 'bg-amber-500/10 text-amber-800 dark:text-amber-400' :
+                        'bg-red-500/10 text-red-700 dark:text-red-400'
                       }`}>
                         {simFootprint <= 4.0 ? '🟢 Low Impact' : simFootprint <= 8.0 ? '🟡 Moderate' : '🔴 High Impact'}
                       </span>

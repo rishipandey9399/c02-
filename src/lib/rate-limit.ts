@@ -23,13 +23,16 @@ export async function checkRateLimit(
     return { success: true }
   }
 
-  // 1. Rate limit by user identifier
-  const idResult = await ratelimit.limit(identifier)
-  if (!idResult.success) {
-    return { success: false, response: buildLimitResponse(idResult) }
+  // 1. Rate limit by user identifier if provided
+  if (identifier) {
+    const idResult = await ratelimit.limit(identifier)
+    if (!idResult.success) {
+      return { success: false, response: buildLimitResponse(idResult) }
+    }
+    return { success: true }
   }
 
-  // 2. Rate limit by client IP address
+  // 2. Fallback: Rate limit by client IP address
   if (ip) {
     const ipResult = await ratelimit.limit(`ip:${ip}`)
     if (!ipResult.success) {

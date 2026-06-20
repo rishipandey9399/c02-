@@ -20,11 +20,6 @@ export async function requireAuth(request: NextRequest): Promise<string> {
     throw new AuthError(401, 'Unauthorized: Missing token')
   }
 
-  // Supporting integration test mocks — test environment only
-  if (process.env.NODE_ENV === 'test' && token === 'mock-valid-token') {
-    return 'mock-user-uid'
-  }
-
   try {
     const decoded = await adminAuth.verifyIdToken(token, true) // checkRevoked = true
     return decoded.uid

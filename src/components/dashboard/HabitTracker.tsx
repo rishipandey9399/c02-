@@ -1,7 +1,8 @@
 'use client'
 
 import { Check, Leaf, Trophy } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useAuth } from '@/hooks/useAuth'
 
 
 
@@ -21,7 +22,45 @@ const DAILY_HABITS: Habit[] = [
 ]
 
 export function HabitTracker() {
+  const { user } = useAuth()
   const [checkedIds, setCheckedIds] = useState<string[]>([])
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  const dateKey = useMemo(() => {
+    const d = new Date()
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }, [])
+
+  const storageKey = useMemo(() => {
+    const prefix = user ? `carbontrack-habits-${user.uid}` : 'carbontrack-habits-anonymous'
+    return `${prefix}-${dateKey}`
+  }, [user, dateKey])
+
+  // Load from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey)
+      if (saved) {
+        setCheckedIds(JSON.parse(saved) as string[])
+      } else {
+        setCheckedIds([])
+      }
+    } catch (err) {
+      console.error('Failed to load habits from localStorage:', err)
+    } finally {
+      setIsLoaded(true)
+    }
+  }, [storageKey])
+
+  // Save to localStorage
+  useEffect(() => {
+    if (!isLoaded) return
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(checkedIds))
+    } catch (err) {
+      console.error('Failed to save habits to localStorage:', err)
+    }
+  }, [checkedIds, storageKey, isLoaded])
 
   const totalSavedToday = useMemo(() => {
     return DAILY_HABITS

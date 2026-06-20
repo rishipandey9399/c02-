@@ -127,6 +127,16 @@ export function ResultsPanel() {
 
   return (
     <div className="space-y-8 py-4">
+      {calculateMutation.error && (
+        <div className="max-w-md mx-auto bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex gap-3 items-start text-left text-xs text-amber-600 dark:text-amber-400" role="alert">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-bold">Failed to save progress</p>
+            <p className="opacity-90">We computed your footprint, but could not save it to your history: {calculateMutation.error.message}</p>
+          </div>
+        </div>
+      )}
+
       {/* Top Banner */}
       <div className="text-center space-y-4">
         <h2 className="text-sm font-bold uppercase tracking-widest text-primary font-display">

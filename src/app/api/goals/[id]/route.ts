@@ -49,11 +49,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     await updateUserGoal(uid, goalId, updates)
     return NextResponse.json({ message: 'Goal updated successfully' }, { status: 200 })
   } catch (error) {
-    console.error('Error updating goal:', error)
     const err = error as Error
     if (err.message === 'Goal not found') {
       return NextResponse.json({ error: 'Goal not found' }, { status: 404 })
     }
+    console.error('Error updating goal:', error)
     return NextResponse.json({ error: 'Failed to update goal' }, { status: 500 })
   }
 }
@@ -78,11 +78,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await deleteUserGoal(uid, goalId)
     return NextResponse.json({ message: 'Goal deleted successfully' }, { status: 200 })
   } catch (error) {
-    console.error('Error deleting goal:', error)
     const err = error as Error
     if (err.message === 'Goal not found') {
       return NextResponse.json({ error: 'Goal not found' }, { status: 404 })
     }
+    console.error('Error deleting goal:', error)
     return NextResponse.json({ error: 'Failed to delete goal' }, { status: 500 })
   }
 }

@@ -14,6 +14,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Redirect logged-in users from auth pages to dashboard
+  const authPaths = ['/login', '/register']
+  const isAuthPath = authPaths.some((p) => path === p)
+
+  if (isAuthPath && token) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
   // Generate CSP
   const isDev = process.env.NODE_ENV === 'development'
   const scriptSrc = isDev

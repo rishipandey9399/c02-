@@ -79,17 +79,24 @@ export function AIChat({ footprintContext }: AIChatProps) {
       if (!reader) throw new Error('ReadableStream not supported')
 
       let assistantResponse = ''
+      let buffer = ''
 
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
 
-        const chunkText = decoder.decode(value)
-        const lines = chunkText.split('\n')
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        
+        // Save the last (possibly incomplete) line to process in the next chunk
+        buffer = lines.pop() || ''
 
         for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const dataStr = line.slice(6).trim()
+          const trimmed = line.trim()
+          if (!trimmed) continue
+          
+          if (trimmed.startsWith('data: ')) {
+            const dataStr = trimmed.slice(6).trim()
             if (dataStr === '[DONE]') continue
 
             try {
@@ -109,6 +116,32 @@ export function AIChat({ footprintContext }: AIChatProps) {
               }
             } catch (err) {
               // Ignore parsing errors for partial/malformed JSON chunks
+            }
+          }
+        }
+      }
+
+      // Process any remaining text in the buffer (though normally stream ends with [DONE])
+      if (buffer.trim()) {
+        const trimmed = buffer.trim()
+        if (trimmed.startsWith('data: ')) {
+          const dataStr = trimmed.slice(6).trim()
+          if (dataStr !== '[DONE]') {
+            try {
+              const data = JSON.parse(dataStr)
+              if (data.text) {
+                assistantResponse += data.text
+                setMessages((prev) => {
+                  const updated = [...prev]
+                  const last = updated[updated.length - 1]
+                  if (last && last.role === 'assistant') {
+                    last.content = assistantResponse
+                  }
+                  return updated
+                })
+              }
+            } catch (err) {
+              // Ignore
             }
           }
         }
@@ -146,7 +179,7 @@ export function AIChat({ footprintContext }: AIChatProps) {
       </div>
 
       {/* Message Timeline */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4" role="log" aria-live="polite" aria-relevant="additions text">
         {messages.map((msg) => {
           const isUser = msg.role === 'user'
           return (

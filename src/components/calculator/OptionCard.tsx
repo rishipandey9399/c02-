@@ -22,7 +22,7 @@ export function OptionCard({
   const isSelected = answers[category] === value
 
   return (
-    <label
+    <div
       className={cn(
         'w-full text-left rounded-2xl border-2 p-5 transition-all duration-300 ease-out cursor-pointer relative overflow-hidden block focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2',
         isSelected
@@ -31,6 +31,7 @@ export function OptionCard({
       )}
     >
       <input
+        id={`${category}-${value}`}
         type="radio"
         name={category}
         value={value}
@@ -39,7 +40,15 @@ export function OptionCard({
         aria-describedby={`${category}-${value}-description`}
         className="sr-only"
       />
-      <div className="flex justify-between items-start gap-4">
+      
+      {/* Absolute label overlay making the whole card clickable */}
+      <label
+        htmlFor={`${category}-${value}`}
+        className="absolute inset-0 z-10 cursor-pointer"
+        aria-label={label}
+      />
+
+      <div className="flex justify-between items-start gap-4 relative z-0">
         <div className="flex-1">
           <span className="font-semibold text-lg font-display block mb-1 text-foreground">
             {label}
@@ -66,6 +75,6 @@ export function OptionCard({
       {isSelected && (
         <div className="absolute top-0 right-0 w-3 h-3 bg-primary rounded-bl-lg" />
       )}
-    </label>
+    </div>
   )
 }

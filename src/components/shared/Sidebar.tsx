@@ -61,7 +61,7 @@ export function Sidebar() {
       </div>
 
       {/* Nav List */}
-      <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+      <nav aria-label="Dashboard Navigation" className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
         {links.map((link) => {
           const Icon = link.icon
           const isActive = pathname === link.href
@@ -70,6 +70,7 @@ export function Sidebar() {
             <Link
               key={link.href}
               href={link.href}
+              aria-current={isActive ? 'page' : undefined}
               className={`flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl transition-all ${
                 isActive
                   ? 'bg-primary text-primary-foreground shadow-md shadow-primary/10 font-bold'
