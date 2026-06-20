@@ -36,7 +36,7 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
     set((state) => ({
       answers: {
         ...state.answers,
-        [category]: value as any,
+        [category]: value,
       },
     })),
   nextStep: () => set((state) => ({ step: Math.min(5, state.step + 1) })),

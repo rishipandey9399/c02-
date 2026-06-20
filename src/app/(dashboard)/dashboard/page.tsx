@@ -1,6 +1,6 @@
 'use client'
 
-import { Target, ArrowRight, Loader2, Award, Zap } from 'lucide-react'
+import { Target, ArrowRight, Loader2, Award, Zap, Leaf } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
@@ -119,11 +119,12 @@ export default function DashboardPage() {
       {/* Top Welcome Title */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black font-display text-foreground tracking-tight">
-            Dashboard
+          <h1 className="text-3xl font-black font-display text-foreground tracking-tight flex items-center gap-2">
+            <Leaf className="w-7 h-7 text-primary" />
+            Your Carbon Journey
           </h1>
-          <p className="text-sm text-muted-foreground">
-            Welcome back, {user?.displayName || 'Friend'}. You are tracking well against your goals!
+          <p className="text-sm text-muted-foreground mt-1">
+            Welcome back, {user?.displayName || 'Friend'}. Every action you take moves the needle on the 2.0t Paris target.
           </p>
         </div>
         <Link
@@ -134,6 +135,85 @@ export default function DashboardPage() {
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+
+      {/* Paris Target Progress Bar */}
+      {latestFootprint && (() => {
+        const target = 2.0
+        const current = latestFootprint.total
+        const gap = Math.max(current - target, 0)
+        const isOnTarget = current <= target
+        return (
+          <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <Target className="w-4 h-4 text-primary" />
+                Progress Toward Paris 2030 Target
+              </h2>
+              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                isOnTarget
+                  ? 'bg-emerald-500/10 text-emerald-500'
+                  : current <= 5
+                  ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
+                  : 'bg-destructive/10 text-destructive'
+              }`}>
+                {isOnTarget ? '✅ On Target!' : `${gap.toFixed(1)}t to go`}
+              </span>
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Your footprint: <strong className="text-foreground">{current.toFixed(1)}t CO₂e/yr</strong></span>
+                <span>Target: <strong className="text-primary">2.0t</strong></span>
+              </div>
+              <div className="w-full h-3 bg-muted rounded-full overflow-hidden relative">
+                <div
+                  className={`h-full rounded-full transition-all duration-700 ${
+                    isOnTarget ? 'bg-emerald-500' : current <= 5 ? 'bg-yellow-500' : 'bg-destructive'
+                  }`}
+                  style={{ width: `${Math.min((current / 16) * 100, 100)}%` }}
+                />
+                {/* Target marker at 2.0t/16t = 12.5% */}
+                <div className="absolute top-0 bottom-0 flex items-center" style={{ left: '12.5%' }}>
+                  <div className="w-0.5 h-full bg-emerald-500/80" />
+                </div>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                The green line marks the <strong className="text-foreground">IPCC 2.0t Paris target</strong>.
+                {isOnTarget
+                  ? ' You have reached it — keep maintaining this level!'
+                  : ' Use the AI recommendations below to close the gap.'}
+              </p>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Daily Climate Tip */}
+      {(() => {
+        const tips = [
+          { emoji: '🌱', text: 'Swapping one beef meal per week for legumes saves ~50kg CO₂e annually — equivalent to driving 200km less.' },
+          { emoji: '⚡', text: 'Switching to a green energy tariff is the single easiest way to cut 2+ tonnes from your footprint instantly.' },
+          { emoji: '🚆', text: 'Taking the train instead of a 1-hour flight saves ~90% of the carbon emissions for that journey.' },
+          { emoji: '🌡️', text: 'Lowering your thermostat by just 1°C can reduce your heating emissions by 5–10% each year.' },
+          { emoji: '🛒', text: 'Buying second-hand instead of new cuts the carbon footprint of clothing and electronics by up to 80%.' },
+          { emoji: '♻️', text: 'Composting food waste prevents methane emissions — food in landfill is 28× more potent than CO₂ over 100 years.' },
+          { emoji: '🌳', text: 'A single mature tree absorbs ~22kg CO₂ per year. Planting 10 trees offsets roughly 220kg of your footprint.' },
+          { emoji: '🚗', text: 'EVs emit 50–70% less CO₂ over their lifetime than petrol cars, even accounting for battery manufacturing.' },
+          { emoji: '✈️', text: 'Flying business class has a footprint 3× higher than economy due to the larger physical space consumed.' },
+          { emoji: '💡', text: 'LED bulbs use 75% less energy than incandescent bulbs and last 25× longer — a small change with real impact.' },
+        ]
+        const today = new Date()
+        const tipIndex = (today.getDate() + today.getMonth()) % tips.length
+        const tip = tips[tipIndex]!
+        return (
+          <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex gap-3 items-start">
+            <span className="text-2xl shrink-0 mt-0.5">{tip.emoji}</span>
+            <div>
+              <p className="text-xs font-bold text-foreground mb-1">Today&apos;s Climate Tip</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{tip.text}</p>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Grid: Footprint Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">

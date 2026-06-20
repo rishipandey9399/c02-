@@ -18,3 +18,14 @@ export const footprintInputSchema = z.object({
 
 export type FootprintInput = z.infer<typeof footprintInputSchema>
 
+/** Schema for validating data read back from Firestore footprint records. */
+export const footprintResultDbSchema = z.object({
+  transport: z.number(),
+  diet: z.number(),
+  energy: z.number(),
+  flights: z.number(),
+  goods: z.number(),
+  total: z.number(),
+  createdAt: z.string().optional(),
+  uid: z.string().optional(),
+})

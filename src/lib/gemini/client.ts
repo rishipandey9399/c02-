@@ -4,53 +4,13 @@ import { GEMINI_SAFETY_SETTINGS } from './safety'
 
 const apiKey = process.env.GEMINI_API_KEY
 
-// Initialise client lazily or handle undefined key in tests
+// Initialise client lazily — throws clearly if API key is absent
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null
 
 export function getGeminiModel(
   modelName: 'gemini-2.0-flash' | 'gemini-2.0-flash-lite' = 'gemini-2.0-flash'
 ) {
   if (!genAI) {
-    if (process.env.NODE_ENV === 'test') {
-      // Return a basic mock structure if in tests and genAI is not initialised
-      return {
-        generateContent: () =>
-          Promise.resolve({
-            response: {
-              text: () =>
-                JSON.stringify({
-                  recommendations: [
-                    {
-                      title: 'Switch to public transit',
-                      detail: 'Using public transit instead of a solo vehicle can significantly cut transport emissions.',
-                      saving: '2.0-3.4 t/yr',
-                      difficulty: 'Medium',
-                      category: 'transport',
-                      timeframe: '1-3 months',
-                    },
-                    {
-                      title: 'Reduce red meat intake',
-                      detail: 'Transition to a mixed or vegetarian diet to decrease farming and crop lifecycle footprint.',
-                      saving: '1.0-1.5 t/yr',
-                      difficulty: 'Easy',
-                      category: 'diet',
-                      timeframe: '1 week',
-                    },
-                    {
-                      title: 'Install home solar panels',
-                      detail: 'Generate clean energy and offset fossil fuel utility reliance.',
-                      saving: '2.0-3.0 t/yr',
-                      difficulty: 'Committed',
-                      category: 'energy',
-                      timeframe: '6-12 months',
-                    },
-                  ],
-                }),
-            },
-          }),
-        startChat: () => ({ sendMessageStream: () => Promise.resolve({ stream: [] }) }),
-      } as unknown as ReturnType<GoogleGenerativeAI['getGenerativeModel']>
-    }
     throw new Error('Generative AI client not initialised. GEMINI_API_KEY is missing.')
   }
 

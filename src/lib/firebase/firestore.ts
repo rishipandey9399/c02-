@@ -1,6 +1,8 @@
 import 'server-only'
 import { adminDb } from './admin'
+import { footprintResultDbSchema } from '@/schemas/footprint.schema'
 import { goalDbSchema } from '@/schemas/goal.schema'
+import { userProfileDbSchema } from '@/schemas/user.schema'
 import type { FootprintResult } from '@/types/carbon'
 import type { UserGoal, UserProfile } from '@/types/user'
 
@@ -31,7 +33,20 @@ export async function getFootprintHistory(uid: string, limit = 12): Promise<Foot
     .limit(limit)
     .get()
 
-  return snapshot.docs.map((doc) => doc.data() as FootprintResult)
+  return snapshot.docs.map((doc) => {
+    const raw = footprintResultDbSchema.parse(doc.data())
+    const record: FootprintResult = {
+      transport: raw.transport,
+      diet: raw.diet,
+      energy: raw.energy,
+      flights: raw.flights,
+      goods: raw.goods,
+      total: raw.total,
+    }
+    if (raw.createdAt !== undefined) record.createdAt = raw.createdAt
+    if (raw.uid !== undefined) record.uid = raw.uid
+    return record
+  })
 }
 
 export async function getUserGoals(uid: string): Promise<UserGoal[]> {
@@ -127,18 +142,18 @@ export async function deleteUserGoal(uid: string, goalId: string): Promise<void>
 export async function getUserProfile(uid: string): Promise<UserProfile | null> {
   const doc = await adminDb.collection('users').doc(uid).get()
   if (!doc.exists) return null
-  const data = doc.data()!
+  const raw = userProfileDbSchema.parse(doc.data())
   const profile: UserProfile = {
-    uid,
-    email: data.email as string,
-    createdAt: data.createdAt as string,
-    updatedAt: data.updatedAt as string,
+    uid: raw.uid,
+    email: raw.email,
+    createdAt: raw.createdAt,
+    updatedAt: raw.updatedAt,
   }
-  if (data.displayName !== undefined && data.displayName !== null) {
-    profile.displayName = data.displayName as string
+  if (raw.displayName != null) {
+    profile.displayName = raw.displayName
   }
-  if (data.photoURL !== undefined && data.photoURL !== null) {
-    profile.photoURL = data.photoURL as string
+  if (raw.photoURL != null) {
+    profile.photoURL = raw.photoURL
   }
   return profile
 }

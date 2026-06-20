@@ -17,3 +17,14 @@ export const userUpdateSchema = z.object({
     }, 'URL must use HTTP or HTTPS protocol')
     .optional(),
 })
+
+/** Schema for validating UserProfile data read back from Firestore. */
+export const userProfileDbSchema = z.object({
+  uid: z.string(),
+  email: z.string(),
+  displayName: z.string().optional().nullable(),
+  photoURL: z.string().optional().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+

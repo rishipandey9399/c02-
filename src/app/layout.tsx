@@ -8,7 +8,7 @@ const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
 export const metadata = {
   title: 'CarbonTrack - Personal Carbon Footprint Tracker',
   description: 'Track, analyze, and reduce your carbon footprint with personalized AI recommendations and real-time tracking.',
-  metadataBase: new URL('http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
 }
 
 export default function RootLayout({

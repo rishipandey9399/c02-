@@ -1,6 +1,6 @@
 'use client'
 
-import { Sparkles, RefreshCw, Zap, AlertCircle } from 'lucide-react'
+import { Sparkles, RefreshCw, Zap, AlertCircle, Share2, CheckCircle2 } from 'lucide-react'
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { RecommendationCard } from '../ai/RecommendationCard'
 import { BarComparison } from '../charts/BarComparison'
@@ -15,6 +15,7 @@ export function ResultsPanel() {
   const { answers, country, reset } = useCalculatorStore()
   const { user } = useAuth()
   const [showAIPlan, setShowAIPlan] = useState(false)
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle')
 
   const { mutate, data, isPending, error, isSuccess } = useRecommendations()
   const calculateMutation = useCalculateFootprint()
@@ -133,15 +134,94 @@ export function ResultsPanel() {
         </h2>
         <div className="inline-block relative">
           <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-emerald-500 to-teal-500 opacity-25 blur" />
-          <div className="relative bg-card border border-border px-8 py-6 rounded-2xl flex flex-col items-center">
+          <div className="relative bg-card border border-border px-8 py-6 rounded-2xl flex flex-col items-center gap-2">
             <span className="text-5xl md:text-6xl font-black text-foreground tracking-tight font-display">
               {result.total.toFixed(1)}
             </span>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mt-1">
+            <span className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
               tonnes CO₂e / year
+            </span>
+            {/* Severity Badge */}
+            <span className={`text-xs font-bold px-3 py-1 rounded-full mt-1 ${
+              result.total <= 3.0
+                ? 'bg-emerald-500/10 text-emerald-500'
+                : result.total <= 7.0
+                ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
+                : 'bg-destructive/10 text-destructive'
+            }`}>
+              {result.total <= 3.0
+                ? '🟢 Low Impact — Near the Paris target!'
+                : result.total <= 7.0
+                ? '🟡 Moderate Impact — Room to improve'
+                : '🔴 High Impact — Action needed'}
             </span>
           </div>
         </div>
+
+        {/* What This Means — Contextual Awareness Card */}
+        <div className="max-w-lg mx-auto bg-primary/5 border border-primary/20 rounded-2xl p-5 text-left space-y-3 animate-pulse-glow">
+          <h3 className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
+            <span>🌍</span> What This Means for the Climate
+          </h3>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">🎯 Paris 2030 Target</span>
+              <span className="font-bold text-emerald-500">2.0t</span>
+            </div>
+            <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="h-full bg-emerald-500/60 rounded-full" style={{ width: '12.5%' }} />
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">Global Average</span>
+              <span className="font-semibold">4.8t</span>
+            </div>
+            <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="h-full bg-muted-foreground/40 rounded-full" style={{ width: '30%' }} />
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-primary font-semibold">Your Score</span>
+              <span className="text-primary font-bold">{result.total.toFixed(1)}t</span>
+            </div>
+            <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary rounded-full transition-all duration-700"
+                style={{ width: `${Math.min((result.total / 16) * 100, 100)}%` }}
+              />
+            </div>
+          </div>
+          <p className="text-[11px] text-muted-foreground leading-relaxed border-t border-border/40 pt-2">
+            {result.total <= 2.0
+              ? '✅ You are at or below the Paris target. Incredible! Focus on maintaining and inspiring others.'
+              : `You need to reduce by ${(result.total - 2.0).toFixed(1)}t CO₂e to reach the Paris target. The AI plan below shows you exactly how.`}
+          </p>
+        </div>
+
+        {/* Share Button */}
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={async () => {
+              const text = `My carbon footprint is ${result.total.toFixed(1)}t CO₂e/year (Paris target: 2.0t). Calculate yours at CarbonTrack!`
+              try {
+                if (navigator.share) {
+                  await navigator.share({ title: 'My Carbon Footprint', text })
+                } else {
+                  await navigator.clipboard.writeText(text)
+                  setShareStatus('copied')
+                  setTimeout(() => setShareStatus('idle'), 2500)
+                }
+              } catch {}
+            }}
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl border border-border bg-secondary hover:bg-border transition-colors cursor-pointer"
+          >
+            {shareStatus === 'copied' ? (
+              <><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Copied to clipboard!</>
+            ) : (
+              <><Share2 className="w-3.5 h-3.5" /> Share My Footprint</>
+            )}
+          </button>
+        </div>
+
         <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
           This calculation covers transport, diet, energy, and flights, plus a fixed baseline of
           2.0t for consumer goods.

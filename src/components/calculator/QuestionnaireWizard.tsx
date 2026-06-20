@@ -41,15 +41,34 @@ export function QuestionnaireWizard() {
                   Calculate Your <span className="text-primary">Carbon Footprint</span>
                 </h1>
                 <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                  Discover your footprint across the 4 main areas of personal consumption, and get
-                  a tailored AI reduction plan in under 3 minutes.
+                  In 60 seconds, discover where you stand &mdash; and get a personalised AI roadmap to reach the{' '}
+                  <strong className="text-foreground">IPCC 2.0t target</strong>.
                 </p>
+              </div>
+
+              {/* Did You Know? IPCC Callout */}
+              <div className="max-w-lg mx-auto bg-primary/5 border border-primary/20 rounded-2xl p-4 flex gap-3 items-start animate-pulse-glow">
+                <span className="text-2xl shrink-0 mt-0.5">🌍</span>
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-foreground">Did You Know?</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    The average person emits{' '}
+                    <strong className="text-foreground">8.5t CO₂e/year</strong>, but the IPCC
+                    says we need to reach{' '}
+                    <strong className="text-primary">2.0t by 2030</strong> to limit warming to
+                    1.5°C. That&apos;s a 76% reduction &mdash; and your choices are the fastest
+                    path there.
+                  </p>
+                </div>
               </div>
 
               {/* Country Selection */}
               <div className="max-w-xs mx-auto space-y-2 text-center pt-2">
-                <label htmlFor="country-selector" className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-center gap-1.5">
-                  <Globe className="w-4.5 h-4.5 text-primary" />
+                <label
+                  htmlFor="country-selector"
+                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-center gap-1.5"
+                >
+                  <Globe className="w-4 h-4 text-primary" />
                   Select Region / Grid Scale
                 </label>
                 <select
@@ -71,7 +90,7 @@ export function QuestionnaireWizard() {
                   onClick={nextStep}
                   className="px-8 py-4 font-bold text-white bg-primary hover:bg-emerald-600 rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center gap-2 group text-base cursor-pointer"
                 >
-                  Get Started
+                  Discover My Impact
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -108,7 +127,7 @@ export function QuestionnaireWizard() {
               onClick={nextStep}
               className="px-6 py-3 font-bold text-white bg-primary hover:bg-emerald-600 rounded-xl transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm shadow-md shadow-primary/10 cursor-pointer"
             >
-              {step === 4 ? 'See my footprint' : 'Next'}
+              {step === 4 ? 'See My Footprint' : 'Next'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

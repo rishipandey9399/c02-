@@ -8,20 +8,14 @@ export function useRecommendations() {
   return useMutation<RecommendationsResponse, Error, RecommendationsRequest>({
     mutationFn: async (answers) => {
       const token = await getToken()
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-      }
-      
-      // Use real token or default fallback for public calculator results preview
-      if (token) {
-        headers.Authorization = `Bearer ${token}`
-      } else {
-        headers.Authorization = `Bearer mock-valid-token`
-      }
+      if (!token) throw new Error('Authentication required')
 
       const response = await fetch('/api/ai/recommendations', {
         method: 'POST',
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(answers),
       })
 
@@ -34,3 +28,4 @@ export function useRecommendations() {
     },
   })
 }
+

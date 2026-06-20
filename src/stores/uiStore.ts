@@ -23,7 +23,7 @@ export const useUIStore = create<UIState>()(
     }),
     {
       name: 'carbontrack-ui',
-      partialize: (state) => ({ theme: state.theme } as any), // Only persist theme
+      partialize: (state): Pick<UIState, 'theme'> => ({ theme: state.theme }),
     }
   )
 )

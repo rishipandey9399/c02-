@@ -20,4 +20,10 @@ export default defineConfig({
       'server-only': path.resolve(__dirname, './tests/mocks/server-only.ts'),
     },
   },
+  esbuild: {
+    jsx: 'transform',
+    jsxFactory: 'React.createElement',
+    jsxFragment: 'React.Fragment',
+    jsxInject: `import React from 'react'`,
+  },
 })

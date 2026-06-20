@@ -12,19 +12,19 @@ interface Habit {
   category: 'diet' | 'transport' | 'energy' | 'goods'
 }
 
-export function HabitTracker() {
-  const habits: Habit[] = [
-    { id: 'diet-plant', label: 'Eat plant-based meals today', saving: 4.5, category: 'diet' },
-    { id: 'transport-transit', label: 'Commute via transit / walk / bike', saving: 6.2, category: 'transport' },
-    { id: 'energy-thermostat', label: 'Set thermostat to 68°F / 20°C', saving: 3.1, category: 'energy' },
-    { id: 'goods-secondhand', label: 'Buy secondhand / zero purchase', saving: 2.5, category: 'goods' },
-    { id: 'goods-waste', label: 'Avoid single-use plastics entirely', saving: 1.0, category: 'goods' },
-  ]
+const DAILY_HABITS: Habit[] = [
+  { id: 'diet-plant', label: 'Eat plant-based meals today', saving: 4.5, category: 'diet' },
+  { id: 'transport-transit', label: 'Commute via transit / walk / bike', saving: 6.2, category: 'transport' },
+  { id: 'energy-thermostat', label: 'Set thermostat to 68°F / 20°C', saving: 3.1, category: 'energy' },
+  { id: 'goods-secondhand', label: 'Buy secondhand / zero purchase', saving: 2.5, category: 'goods' },
+  { id: 'goods-waste', label: 'Avoid single-use plastics entirely', saving: 1.0, category: 'goods' },
+]
 
+export function HabitTracker() {
   const [checkedIds, setCheckedIds] = useState<string[]>([])
 
   const totalSavedToday = useMemo(() => {
-    return habits
+    return DAILY_HABITS
       .filter((h) => checkedIds.includes(h.id))
       .reduce((acc, curr) => acc + curr.saving, 0)
   }, [checkedIds])
@@ -35,7 +35,7 @@ export function HabitTracker() {
     )
   }
 
-  const completionPercent = Math.round((checkedIds.length / habits.length) * 100)
+  const completionPercent = Math.round((checkedIds.length / DAILY_HABITS.length) * 100)
 
   return (
     <div className="bg-card border border-border p-6 rounded-3xl shadow-sm glassmorphism flex flex-col justify-between h-[340px]">
@@ -70,7 +70,7 @@ export function HabitTracker() {
 
         {/* Checkbox list */}
         <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
-          {habits.map((habit) => {
+          {DAILY_HABITS.map((habit) => {
             const isChecked = checkedIds.includes(habit.id)
             return (
               <button

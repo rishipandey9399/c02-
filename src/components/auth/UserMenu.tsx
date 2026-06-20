@@ -1,6 +1,7 @@
 'use client'
 
 import { LogOut, LayoutDashboard, Settings } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
@@ -68,9 +69,11 @@ export function UserMenu() {
         aria-controls="user-dropdown-menu"
       >
         {user.photoURL ? (
-          <img
+          <Image
             src={user.photoURL}
             alt={user.displayName ?? 'User profile'}
+            width={36}
+            height={36}
             className="w-9 h-9 rounded-full object-cover border border-border"
           />
         ) : (

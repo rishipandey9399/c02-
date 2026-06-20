@@ -41,59 +41,45 @@ vi.mock('firebase-admin', () => ({
   }),
 }))
 
-vi.mock('@google/generative-ai', () => {
-  const HarmCategory = {
-    HARM_CATEGORY_HARASSMENT: 'HARM_CATEGORY_HARASSMENT',
-    HARM_CATEGORY_HATE_SPEECH: 'HARM_CATEGORY_HATE_SPEECH',
-    HARM_CATEGORY_SEXUALLY_EXPLICIT: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-    HARM_CATEGORY_DANGEROUS_CONTENT: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-  }
-  const HarmBlockThreshold = {
-    BLOCK_MEDIUM_AND_ABOVE: 'BLOCK_MEDIUM_AND_ABOVE',
-  }
-  return {
-    GoogleGenerativeAI: vi.fn().mockImplementation(() => ({
-      getGenerativeModel: vi.fn().mockReturnValue({
-        generateContent: vi.fn().mockResolvedValue({
-          response: {
-            text: () =>
-              JSON.stringify({
-                recommendations: [
-                  {
-                    title: 'Switch to public transit',
-                    detail: 'Using public transit instead of a solo vehicle can significantly cut transport emissions.',
-                    saving: '2.0-3.4 t/yr',
-                    difficulty: 'Medium',
-                    category: 'transport',
-                    timeframe: '1-3 months',
-                  },
-                  {
-                    title: 'Reduce red meat intake',
-                    detail: 'Transition to a mixed or vegetarian diet to decrease farming and crop lifecycle footprint.',
-                    saving: '1.0-1.5 t/yr',
-                    difficulty: 'Easy',
-                    category: 'diet',
-                    timeframe: '1 week',
-                  },
-                  {
-                    title: 'Install home solar panels',
-                    detail: 'Generate clean energy and offset fossil fuel utility reliance.',
-                    saving: '2.0-3.0 t/yr',
-                    difficulty: 'Committed',
-                    category: 'energy',
-                    timeframe: '6-12 months',
-                  },
-                ],
-              }),
-          },
-        }),
-        startChat: vi.fn(),
-      }),
-    })),
-    HarmCategory,
-    HarmBlockThreshold,
-  }
-})
+vi.mock('@/lib/gemini/client', () => ({
+  getGeminiModel: vi.fn().mockReturnValue({
+    generateContent: vi.fn().mockResolvedValue({
+      response: {
+        text: () =>
+          JSON.stringify({
+            recommendations: [
+              {
+                title: 'Switch to public transit',
+                detail: 'Using public transit instead of a solo vehicle can significantly cut transport emissions.',
+                saving: '2.0-3.4 t/yr',
+                difficulty: 'Medium',
+                category: 'transport',
+                timeframe: '1-3 months',
+              },
+              {
+                title: 'Reduce red meat intake',
+                detail: 'Transition to a mixed or vegetarian diet to decrease farming and crop lifecycle footprint.',
+                saving: '1.0-1.5 t/yr',
+                difficulty: 'Easy',
+                category: 'diet',
+                timeframe: '1 week',
+              },
+              {
+                title: 'Install home solar panels',
+                detail: 'Generate clean energy and offset fossil fuel utility reliance.',
+                saving: '2.0-3.0 t/yr',
+                difficulty: 'Committed',
+                category: 'energy',
+                timeframe: '6-12 months',
+              },
+            ],
+          }),
+      },
+    }),
+    startChat: vi.fn(),
+  }),
+}))
+
 
 vi.mock('@/lib/rate-limit', () => ({
   checkRateLimit: vi.fn().mockResolvedValue({ success: true }),

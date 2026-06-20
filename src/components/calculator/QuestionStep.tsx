@@ -16,6 +16,10 @@ const QUESTIONS_DATA = {
     question: 'How do you primarily travel for daily commuting?',
     description:
       'Daily transportation choices represent a significant part of your annual carbon output.',
+    climateContext: {
+      emoji: '🚗',
+      fact: 'Transport accounts for ~24% of global CO₂ emissions. Your daily commute is one of the most powerful personal climate levers.',
+    },
     options: [
       {
         value: 'car-alone',
@@ -43,6 +47,10 @@ const QUESTIONS_DATA = {
     question: 'Which best describes your eating habits?',
     description:
       'Food production emissions vary dramatically, especially based on meat intake.',
+    climateContext: {
+      emoji: '🥩',
+      fact: 'Beef and lamb produce 20–100× more CO₂ per gram of protein than plant-based alternatives. Food is your second biggest lever.',
+    },
     options: [
       {
         value: 'heavy-meat',
@@ -74,6 +82,10 @@ const QUESTIONS_DATA = {
   energy: {
     question: 'What is the primary source of heating/power for your home?',
     description: 'Residential heating and electricity depend highly on the energy mix you use.',
+    climateContext: {
+      emoji: '⚡',
+      fact: 'Your home energy source contributes 1–4 tonnes CO₂e annually. Switching to renewables is a zero-effort, high-impact change.',
+    },
     options: [
       {
         value: 'gas-fossil',
@@ -100,6 +112,10 @@ const QUESTIONS_DATA = {
   flights: {
     question: 'How often do you travel by plane annually?',
     description: 'Aviation generates significant high-altitude emissions. Even a single flight is substantial.',
+    climateContext: {
+      emoji: '✈️',
+      fact: 'A single transatlantic return flight emits ~1.7t CO₂e — equivalent to driving a petrol car for 7 months. Flying less is impactful.',
+    },
     options: [
       {
         value: 'none',
@@ -144,6 +160,15 @@ export function QuestionStep({ category, stepIndex }: QuestionStepProps) {
         <p className="text-sm text-muted-foreground leading-relaxed">{qData.description}</p>
       </div>
 
+      {/* Per-category Climate Context Callout */}
+      <div className="flex items-start gap-2.5 bg-amber-500/5 border border-amber-500/20 rounded-xl px-4 py-3">
+        <span className="text-lg shrink-0 leading-tight mt-0.5">{qData.climateContext.emoji}</span>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <strong className="text-foreground font-semibold">Climate fact: </strong>
+          {qData.climateContext.fact}
+        </p>
+      </div>
+
       <div
         role="radiogroup"
         aria-label={qData.question}
@@ -176,4 +201,3 @@ export function QuestionStep({ category, stepIndex }: QuestionStepProps) {
     </section>
   )
 }
-
