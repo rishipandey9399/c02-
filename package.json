@@ -46,7 +46,6 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@next/swc-darwin-arm64": "^16.2.9",
     "@playwright/test": "^1.44.1",
     "@storybook/addon-essentials": "^8.1.6",
     "@storybook/addon-interactions": "^8.1.6",

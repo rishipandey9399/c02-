@@ -4,10 +4,6 @@ import { GEMINI_SAFETY_SETTINGS } from './safety'
 
 const apiKey = process.env.GEMINI_API_KEY
 
-if (!apiKey && process.env.NODE_ENV !== 'test') {
-  throw new Error('GEMINI_API_KEY is required but not set')
-}
-
 // Initialise client lazily or handle undefined key in tests
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null
 

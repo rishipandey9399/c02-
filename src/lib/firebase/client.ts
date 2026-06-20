@@ -1,7 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
   const missingKeys = [
     'NEXT_PUBLIC_FIREBASE_API_KEY',
     'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-const firebaseConfig = process.env.NODE_ENV === 'production'
+const firebaseConfig = (process.env.NODE_ENV === 'production' && typeof window !== 'undefined')
   ? {
       apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
       authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
