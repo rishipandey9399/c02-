@@ -7,8 +7,10 @@ export default defineConfig({
     globals: true,
     coverage: {
       thresholds: {
-        lines: 65,
+        lines: 80,
         functions: 80,
+        branches: 80,
+        statements: 80,
       },
     },
   },

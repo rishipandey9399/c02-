@@ -13,3 +13,10 @@ export const goalCreateSchema = z.object({
 export const goalUpdateSchema = goalCreateSchema.partial().extend({
   completed: z.boolean().optional(),
 })
+
+export const goalDbSchema = goalCreateSchema.extend({
+  completed: z.boolean(),
+  createdAt: z.string(),
+  completedAt: z.string().nullable().optional(),
+})
+

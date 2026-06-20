@@ -1,5 +1,6 @@
 import 'server-only'
 import { adminDb } from './admin'
+import { goalDbSchema } from '@/schemas/goal.schema'
 import type { FootprintResult } from '@/types/carbon'
 import type { UserGoal, UserProfile } from '@/types/user'
 
@@ -42,24 +43,25 @@ export async function getUserGoals(uid: string): Promise<UserGoal[]> {
     .get()
 
   return snapshot.docs.map((doc) => {
-    const data = doc.data()
+    const data = goalDbSchema.parse(doc.data())
     const goal: UserGoal = {
       id: doc.id,
       uid,
-      title: data.title as string,
-      category: data.category as 'transport' | 'diet' | 'energy' | 'flights' | 'goods',
-      difficulty: data.difficulty as 'Easy' | 'Medium' | 'Committed',
-      saving: data.saving as number,
-      targetDate: data.targetDate as string,
-      completed: data.completed as boolean,
-      createdAt: data.createdAt as string,
+      title: data.title,
+      category: data.category,
+      difficulty: data.difficulty,
+      saving: data.saving,
+      targetDate: data.targetDate,
+      completed: data.completed,
+      createdAt: data.createdAt,
     }
     if (data.completedAt !== undefined && data.completedAt !== null) {
-      goal.completedAt = data.completedAt as string
+      goal.completedAt = data.completedAt
     }
     return goal
   })
 }
+
 
 export async function createUserGoal(
   uid: string,
