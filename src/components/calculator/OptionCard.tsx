@@ -37,6 +37,7 @@ export function OptionCard({
         value={value}
         checked={isSelected}
         onChange={() => selectAnswer(category, value as NonNullable<typeof answers[typeof category]>)}
+        aria-label={label}
         aria-describedby={`${category}-${value}-description`}
         className="sr-only"
       />

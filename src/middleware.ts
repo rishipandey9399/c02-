@@ -31,7 +31,8 @@ export function middleware(request: NextRequest) {
   const cspHeader = `
     default-src 'self';
     ${scriptSrc};
-    style-src 'self' 'unsafe-inline';
+    style-src-elem 'self' 'nonce-${nonce}';
+    style-src-attr 'self' 'unsafe-inline';
     img-src 'self' data: https://storage.googleapis.com https://lh3.googleusercontent.com;
     connect-src 'self' https://*.firestore.googleapis.com https://*.firebaseio.com https://*.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;
     font-src 'self';
