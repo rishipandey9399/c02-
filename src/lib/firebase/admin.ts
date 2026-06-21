@@ -28,13 +28,15 @@ if (!isBuildPhase && !admin.apps.length) {
   }
 }
 
-export const adminAuth = isBuildPhase
-  ? {
+export const adminAuth: admin.auth.Auth = isBuildPhase
+  ? ({
       verifyIdToken: async () => {
         throw new Error('Firebase Admin disabled during build phase')
       },
-    } as any
+    } as unknown as admin.auth.Auth)
   : admin.auth()
 
-export const adminDb = isBuildPhase ? null as any : admin.firestore()
+export const adminDb: admin.firestore.Firestore = isBuildPhase
+  ? (null as unknown as admin.firestore.Firestore)
+  : admin.firestore()
 export default admin

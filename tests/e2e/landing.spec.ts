@@ -8,7 +8,7 @@ test.describe('Landing Page E2E', () => {
     await expect(page.locator('text=CarbonTrack')).toBeVisible()
     
     // Check the main heading
-    await expect(page.locator('h1')).toContainText('Carbon Footprint')
+    await expect(page.locator('h1')).toContainText('Your Choices Shape')
     
     // Check that the "Start Calculator" button is present
     const startBtn = page.locator('text=Start Calculator').first()

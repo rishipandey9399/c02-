@@ -45,7 +45,6 @@ export function OptionCard({
       <label
         htmlFor={`${category}-${value}`}
         className="absolute inset-0 z-10 cursor-pointer"
-        aria-label={label}
       />
 
       <div className="flex justify-between items-start gap-4 relative z-0">
