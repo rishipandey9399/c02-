@@ -31,6 +31,7 @@ if (!isBuildPhase && !admin.apps.length) {
 export const adminAuth: admin.auth.Auth = isBuildPhase
   ? ({
       verifyIdToken: async () => {
+        await Promise.resolve()
         throw new Error('Firebase Admin disabled during build phase')
       },
     } as unknown as admin.auth.Auth)

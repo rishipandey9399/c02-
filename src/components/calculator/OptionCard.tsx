@@ -37,7 +37,6 @@ export function OptionCard({
         value={value}
         checked={isSelected}
         onChange={() => selectAnswer(category, value as NonNullable<typeof answers[typeof category]>)}
-        aria-label={label}
         aria-describedby={`${category}-${value}-description`}
         className="sr-only"
       />
@@ -46,7 +45,9 @@ export function OptionCard({
       <label
         htmlFor={`${category}-${value}`}
         className="absolute inset-0 z-10 cursor-pointer"
-      />
+      >
+        <span className="sr-only">{label}</span>
+      </label>
 
       <div className="flex justify-between items-start gap-4 relative z-0">
         <div className="flex-1">
